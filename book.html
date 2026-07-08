@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Adventures of the Hairless Butt Cheek</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #fdf6e3;
+  font-family: 'Comic Neue', cursive;
+}
+
+/* ── BOOK SHELL ── */
+#book {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fdf6e3;
+}
+
+/* ── CHAPTER NAV BAR ── */
+#nav-bar {
+  flex-shrink: 0;
+  width: 100%;
+  background: #7B2FBE;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+}
+#nav-bar::-webkit-scrollbar { display: none; }
+#nav-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 13px;
+  color: #ffd700;
+  white-space: nowrap;
+  margin-right: 8px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+.nav-btn {
+  flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.15);
+  font-family: 'Fredoka One', cursive;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+.nav-btn.active { background: #ffd700; color: #7B2FBE; border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+
+/* ── PAGE AREA ── */
+#page-area {
+  flex: 1;
+  overflow: hidden;
+  width: 100%;
+  max-width: 780px;
+  position: relative;
+}
+
+/* ── PAGE ── */
+.page {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 20px 30px;
+  background: #fdf6e3;
+  display: none;
+  scrollbar-width: thin;
+  scrollbar-color: #c9b0e8 transparent;
+}
+.page::-webkit-scrollbar { width: 5px; }
+.page::-webkit-scrollbar-thumb { background: #c9b0e8; border-radius: 3px; }
+.page.active { display: block; }
+
+/* ── CHAPTER HEADER ── */
+.ch-head {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.ch-num {
+  display: inline-block;
+  font-family: 'Fredoka One', cursive;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #9b59b6;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.ch-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(20px, 4vw, 30px);
+  color: #2c0a4e;
+  line-height: 1.2;
+  text-shadow: 2px 2px 0 rgba(123,47,190,0.12);
+}
+
+/* ── ILLUSTRATION ── */
+.illo-wrap {
+  width: 100%;
+  margin: 16px 0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(123,47,190,0.18), 0 2px 6px rgba(0,0,0,0.1);
+  background: #fff;
+  border: 3px solid #e8d5ff;
+}
+.illo-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── STORY TEXT ── */
+.story-body {
+  font-size: clamp(15px, 2.2vw, 18px);
+  line-height: 1.85;
+  color: #2a1a3e;
+}
+.story-body p {
+  margin-bottom: 14px;
+}
+.story-body p:last-child { margin-bottom: 0; }
+
+/* Seuss-style coloured verse lines */
+.verse {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(16px, 2.5vw, 20px);
+  line-height: 1.7;
+  color: #5b1fa8;
+  margin: 16px 0;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #f3e8ff 0%, #fde8ff 100%);
+  border-left: 5px solid #9b59b6;
+  border-radius: 0 14px 14px 0;
+}
+.verse span { display: block; }
+.verse span:nth-child(even) { color: #c0392b; margin-left: 18px; }
+
+/* Fun fact box */
+.fun-fact {
+  background: #fff8e1;
+  border: 2px solid #f1c40f;
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #7d6608;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.fun-fact-star { font-size: 1.4rem; flex-shrink: 0; }
+
+/* ── PREV/NEXT ── */
+#foot {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 780px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: #fdf6e3;
+  border-top: 2px dashed #d4bef5;
+}
+.pg-btn {
+  background: #7B2FBE;
+  border: none;
+  border-radius: 30px;
+  padding: 9px 22px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 3px 10px rgba(123,47,190,0.35);
+}
+.pg-btn:hover { background: #9d45e8; transform: scale(1.04); }
+.pg-btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+#page-counter {
+  font-family: 'Fredoka One', cursive;
+  font-size: 13px;
+  color: #9b7cc8;
+}
+
+/* ── COVER PAGE ── */
+#cover-page {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 24px 20px 30px;
+  background: #fdf6e3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.cover-box {
+  width: 100%;
+  max-width: 560px;
+  background: linear-gradient(145deg, #7B2FBE, #4A90D9);
+  border-radius: 28px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(123,47,190,0.4);
+}
+.cover-emoji { font-size: 5rem; line-height: 1; margin-bottom: 12px; }
+.cover-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(22px, 5vw, 36px);
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+  margin-bottom: 8px;
+}
+.cover-sub { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+.cover-start {
+  background: #ffd700;
+  border: none;
+  border-radius: 40px;
+  padding: 12px 36px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 18px;
+  color: #7B2FBE;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transition: transform 0.15s;
+}
+.cover-start:hover { transform: scale(1.06); }
+.cover-toc {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 24px;
+  border: 2px solid #e0d0f5;
+}
+.toc-title { font-family: 'Fredoka One', cursive; font-size: 18px; color: #7B2FBE; margin-bottom: 12px; }
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e8d5f5;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+.toc-item:last-child { border-bottom: none; }
+.toc-item:hover .toc-name { color: #7B2FBE; }
+.toc-num {
+  font-family: 'Fredoka One', cursive;
+  font-size: 13px;
+  color: #9b59b6;
+  width: 22px;
+  flex-shrink: 0;
+}
+.toc-icon { font-size: 18px; }
+.toc-name { font-size: 13px; color: #444; font-weight: 700; }
+
+/* ── TOUCH ENHANCEMENTS ── */
+.pg-btn {
+  min-width: 80px;
+  min-height: 48px;
+  font-size: 16px !important;
+  padding: 12px 26px !important;
+}
+.nav-btn {
+  width: 42px !important;
+  height: 42px !important;
+  font-size: 15px !important;
+}
+#nav-bar { padding: 10px 14px !important; gap: 8px !important; }
+#foot { padding: 12px 20px !important; }
+
+/* Swipe hint */
+#swipe-hint {
+  position: fixed;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Fredoka One", cursive;
+  font-size: 11px;
+  color: #b09ad8;
+  pointer-events: none;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+</style>
+</head>
+<body>
+<div id="book">
+  <div id="nav-bar">
+    <span id="nav-title">🍑 HBC</span>
+    <button class="nav-btn active" id="nb-0" onclick="goTo(0)">📖</button>
+    <button class="nav-btn" id="nb-1" onclick="goTo(1)">1</button>
+    <button class="nav-btn" id="nb-2" onclick="goTo(2)">2</button>
+    <button class="nav-btn" id="nb-3" onclick="goTo(3)">3</button>
+    <button class="nav-btn" id="nb-4" onclick="goTo(4)">4</button>
+    <button class="nav-btn" id="nb-5" onclick="goTo(5)">5</button>
+    <button class="nav-btn" id="nb-6" onclick="goTo(6)">6</button>
+    <button class="nav-btn" id="nb-7" onclick="goTo(7)">7</button>
+    <button class="nav-btn" id="nb-8" onclick="goTo(8)">8</button>
+    <button class="nav-btn" id="nb-9" onclick="goTo(9)">9</button>
+    <button class="nav-btn" id="nb-10" onclick="goTo(10)">10</button>
+    <button class="nav-btn" id="nb-11" onclick="goTo(11)">11</button>
+    <button class="nav-btn" id="nb-12" onclick="goTo(12)">12</button>
+    <button class="nav-btn" id="nb-13" onclick="goTo(13)">13</button>
+  </div>
+
+  <div id="page-area">
+
+    <!-- COVER -->
+    <div id="cover-page" class="page active">
+      <div class="cover-box">
+        <div class="cover-emoji">🍑</div>
+        <div class="cover-title">The Adventures of<br>the Hairless Butt Cheek</div>
+        <div class="cover-sub">A 13-part epic of glory, goo &amp; green underwear</div>
+        <button class="cover-start" onclick="goTo(1)">Read Chapter 1 ▶</button>
+      </div>
+      <div class="cover-toc">
+        <div class="toc-title">📚 Table of Contents</div>
+        <div class="toc-item" onclick="goTo(1)"><span class="toc-num">1</span><span class="toc-icon">🦕</span><span class="toc-name">The Legend of the Hairless Butt Cheek</span></div>
+        <div class="toc-item" onclick="goTo(2)"><span class="toc-num">2</span><span class="toc-icon">🦈</span><span class="toc-name">The Mark</span></div>
+        <div class="toc-item" onclick="goTo(3)"><span class="toc-num">3</span><span class="toc-icon">🐆</span><span class="toc-name">The Hairless Butt Cheek Babies</span></div>
+        <div class="toc-item" onclick="goTo(4)"><span class="toc-num">4</span><span class="toc-icon">👻</span><span class="toc-name">The Ghost</span></div>
+        <div class="toc-item" onclick="goTo(5)"><span class="toc-num">5</span><span class="toc-icon">🚗</span><span class="toc-name">The Car</span></div>
+        <div class="toc-item" onclick="goTo(6)"><span class="toc-num">6</span><span class="toc-icon">🐷</span><span class="toc-name">The Pig</span></div>
+        <div class="toc-item" onclick="goTo(7)"><span class="toc-num">7</span><span class="toc-icon">🩲</span><span class="toc-name">The Pigless Underwear</span></div>
+        <div class="toc-item" onclick="goTo(8)"><span class="toc-num">8</span><span class="toc-icon">🥓</span><span class="toc-name">The Flying Pig</span></div>
+        <div class="toc-item" onclick="goTo(9)"><span class="toc-num">9</span><span class="toc-icon">🦆</span><span class="toc-name">The Brainless Duck</span></div>
+        <div class="toc-item" onclick="goTo(10)"><span class="toc-num">10</span><span class="toc-icon">🧠</span><span class="toc-name">Antmucky Fat Soup</span></div>
+        <div class="toc-item" onclick="goTo(11)"><span class="toc-num">11</span><span class="toc-icon">🐕</span><span class="toc-name">The Dog Race</span></div>
+        <div class="toc-item" onclick="goTo(12)"><span class="toc-num">12</span><span class="toc-icon">💣</span><span class="toc-name">The Tape</span></div>
+        <div class="toc-item" onclick="goTo(13)"><span class="toc-num">13</span><span class="toc-icon">👑</span><span class="toc-name">In the Jail Cell</span></div>
+      </div>
+    </div>
+
+    <!-- CH 1 -->
+    <div class="page" id="p1">
+      <div class="ch-head">
+        <div class="ch-num">Chapter One</div>
+        <div class="ch-title">The Legend of the<br>Hairless Butt Cheek</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="sky1" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#7ec850"/><stop offset="100%" stop-color="#3a7a1a"/></radialGradient>
+          </defs>
+          <rect width="700" height="320" fill="url(#sky1)"/>
+          <!-- Ground -->
+          <ellipse cx="350" cy="295" rx="360" ry="40" fill="#2a5a10"/>
+          <!-- Trees wavy Seuss style -->
+          <ellipse cx="80" cy="180" rx="38" ry="55" fill="#1a6a0a"/>
+          <ellipse cx="80" cy="155" rx="28" ry="35" fill="#22880e"/>
+          <rect x="75" y="220" width="10" height="70" fill="#6b3a1a"/>
+          <ellipse cx="620" cy="170" rx="42" ry="60" fill="#1a6a0a"/>
+          <ellipse cx="620" cy="140" rx="30" ry="38" fill="#22880e"/>
+          <rect x="615" y="215" width="12" height="75" fill="#6b3a1a"/>
+          <ellipse cx="160" cy="200" rx="28" ry="42" fill="#228c0e"/>
+          <rect x="156" y="230" width="8" height="60" fill="#6b3a1a"/>
+          <ellipse cx="540" cy="195" rx="32" ry="46" fill="#1e7a0a"/>
+          <rect x="535" y="228" width="9" height="65" fill="#6b3a1a"/>
+          <!-- HBC character: peach circle with underwear -->
+          <circle cx="230" cy="230" r="38" fill="#ffb347" stroke="#e8872a" stroke-width="3"/>
+          <!-- underwear green -->
+          <rect x="210" y="250" width="40" height="22" rx="6" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
+          <!-- face -->
+          <circle cx="220" cy="222" r="4" fill="#333"/>
+          <circle cx="238" cy="222" r="4" fill="#333"/>
+          <path d="M218 234 Q229 242 240 234" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Dinosaur big green -->
+          <ellipse cx="460" cy="228" rx="62" ry="44" fill="#2ecc71" stroke="#1abc9c" stroke-width="3"/>
+          <ellipse cx="510" cy="200" rx="32" ry="26" fill="#2ecc71" stroke="#1abc9c" stroke-width="2"/>
+          <!-- dino eye -->
+          <circle cx="522" cy="194" r="6" fill="#fff"/>
+          <circle cx="524" cy="194" r="3" fill="#c0392b"/>
+          <!-- dino teeth -->
+          <path d="M490 220 L496 230 L502 220 L508 230 L514 220" fill="none" stroke="#fff" stroke-width="3"/>
+          <!-- dino tail -->
+          <path d="M400 248 Q360 230 340 260" fill="none" stroke="#2ecc71" stroke-width="18" stroke-linecap="round"/>
+          <!-- Missing butt cheek torn off - dashed circle -->
+          <circle cx="270" cy="242" r="16" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="5,4"/>
+          <text x="268" y="247" text-anchor="middle" font-size="10" fill="#c0392b">?</text>
+          <!-- Glue pot on ground -->
+          <rect x="148" y="248" width="28" height="32" rx="5" fill="#e74c3c"/>
+          <rect x="152" y="240" width="20" height="12" rx="3" fill="#c0392b"/>
+          <text x="162" y="253" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">GLUE</text>
+          <!-- Caption -->
+          <text x="350" y="315" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#fff" font-style="italic">The Hairless Butt Cheek meets the dinosaur — minus one cheek!</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>Once upon a time, in a forest so wide,</span>
+          <span>lived a Butt Cheek so hairless — with nothing to hide.</span>
+          <span>He wore green underwear, every day, every night,</span>
+          <span>and his powers were TERRIBLE — a truly wild sight.</span>
+        </div>
+        <p>If he <strong>pooped</strong>, five enemies would perish on the spot. If he <strong>farted</strong>, three more would drop. The Hairless Butt Cheek wore this power lightly — and always kept a pot of <strong>super glue</strong> close by, just in case.</p>
+        <div class="verse">
+          <span>One day in the forest he strolled along the path,</span>
+          <span>when a dinosaur pounced and let out a laugh:</span>
+          <span>"I'll chomp off your cheek! Ha ha ha HA!"</span>
+          <span>And it did — with a CRUNCH — leaving one great big scar!</span>
+        </div>
+        <p>The Hairless Butt Cheek looked down. One cheek: gone. The dinosaur grinned. A terrible grin. So HBC did what any reasonable butt would do — he pooped directly on the dinosaur's face. The dinosaur died immediately.</p>
+        <p>He grabbed the glue pot, found his missing cheek, and stuck it right back on. He walked off into the sunset, green underwear gleaming. The end... of Part One.</p>
+        <div class="fun-fact"><span class="fun-fact-star">⭐</span><span><strong>Fun Fact:</strong> All Hairless Butt Cheeks wear underwear at all times. Even sleeping. Even in the shower. This is the law.</span></div>
+      </div>
+    </div>
+
+    <!-- CH 2 -->
+    <div class="page" id="p2">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Two</div>
+        <div class="ch-title">The Mark</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ocean2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2980b9"/><stop offset="100%" stop-color="#1a5276"/></linearGradient>
+          </defs>
+          <rect width="700" height="320" fill="url(#ocean2)"/>
+          <!-- Waves -->
+          <path d="M0 120 Q88 100 175 120 Q263 140 350 120 Q438 100 525 120 Q613 140 700 120 L700 320 L0 320Z" fill="#1a6090" opacity="0.6"/>
+          <path d="M0 160 Q88 140 175 160 Q263 180 350 160 Q438 140 525 160 Q613 180 700 160 L700 320 L0 320Z" fill="#154360" opacity="0.7"/>
+          <!-- HBC swimming -->
+          <circle cx="200" cy="148" r="34" fill="#ffb347" stroke="#e8872a" stroke-width="3"/>
+          <rect x="181" y="168" width="38" height="18" rx="5" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
+          <!-- splashing arms -->
+          <path d="M167 145 Q150 130 138 145" fill="none" stroke="#ffb347" stroke-width="10" stroke-linecap="round"/>
+          <path d="M233 145 Q250 130 262 145" fill="none" stroke="#ffb347" stroke-width="10" stroke-linecap="round"/>
+          <!-- eyes smile -->
+          <circle cx="190" cy="140" r="4" fill="#333"/>
+          <circle cx="210" cy="140" r="4" fill="#333"/>
+          <path d="M188 152 Q200 161 212 152" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Tape on butt mark -->
+          <rect x="215" y="158" width="20" height="12" rx="3" fill="#f0c060" stroke="#c8a030" stroke-width="1.5"/>
+          <text x="225" y="167" text-anchor="middle" font-size="7" fill="#555">tape</text>
+          <!-- Shark lurking -->
+          <path d="M420 200 Q500 160 580 200 Q540 210 500 205 Q460 210 420 200Z" fill="#7f8c8d"/>
+          <!-- shark fin -->
+          <polygon points="510,165 520,200 500,200" fill="#636e72"/>
+          <!-- shark eye -->
+          <circle cx="562" cy="192" r="5" fill="#fff"/>
+          <circle cx="563" cy="192" r="2.5" fill="#2c3e50"/>
+          <!-- shark teeth -->
+          <path d="M430 200 L436 210 L442 200 L448 210 L454 200 L460 210 L466 200" fill="none" stroke="#fff" stroke-width="2.5"/>
+          <!-- Doctor on shore -->
+          <rect x="580" y="210" width="80" height="100" fill="#d5e8d4" rx="8" stroke="#82b366" stroke-width="2"/>
+          <text x="620" y="235" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#333" font-weight="bold">DR.</text>
+          <text x="620" y="250" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#333" font-weight="bold">FATZMANN</text>
+          <!-- fat spray bottle -->
+          <rect x="608" y="258" width="22" height="40" rx="5" fill="#e74c3c"/>
+          <text x="619" y="272" text-anchor="middle" font-size="7" fill="#fff" font-weight="bold">FAT</text>
+          <text x="619" y="282" text-anchor="middle" font-size="7" fill="#fff" font-weight="bold">SPRAY</text>
+          <!-- spray arrow -->
+          <line x1="630" y1="270" x2="655" y2="260" stroke="#e74c3c" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+          <!-- Warning mark -->
+          <circle cx="240" cy="178" r="10" fill="none" stroke="#e74c3c" stroke-width="2.5"/>
+          <text x="240" y="183" text-anchor="middle" font-size="11" fill="#e74c3c">!</text>
+          <text x="350" y="312" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#aee" font-style="italic">A shark ate the tape — and left a very suspicious mark!</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>One week went by and the butt thought, "What fun!"</span>
+          <span>"I'll go for a swim in the ocean and sun!"</span>
+          <span>But his cheek was still borrowed — held on by old tape,</span>
+          <span>and a shark smelled the tape and went for a scrape.</span>
+        </div>
+        <p>CHOMP! The shark ate the tape clean off. The cheek stayed on — but it left a <strong>mark</strong>. A red ring. A stamp. A very embarrassing blemish that all other Hairless Butt Cheeks would surely notice and mock forever.</p>
+        <div class="verse">
+          <span>He swam to the shore and went straight to the doc,</span>
+          <span>Dr. Fatzmann, who stood there in his medical smock.</span>
+          <span>"I've a mark!" cried the Butt Cheek, all shaky and pale.</span>
+          <span>"Fat Spray!" cried the doctor. "It never can fail!"</span>
+        </div>
+        <p>The spray was applied. The mark was covered. And then... it grew. And <em>grew</em>. And <strong>GREW</strong>. The Hairless Butt Cheek inflated like a very unfortunate balloon.</p>
+        <p>Then — <strong>BOOM</strong>. He exploded. And out of the explosion tumbled fifteen tiny, wriggling Baby Hairless Butt Cheeks, each in their own tiny green underwear.</p>
+      </div>
+    </div>
+
+    <!-- CH 3 -->
+    <div class="page" id="p3">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Three</div>
+        <div class="ch-title">The Hairless Butt Cheek Babies</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="prairie3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0c040"/><stop offset="100%" stop-color="#c8960c"/></linearGradient>
+          </defs>
+          <rect width="700" height="300" fill="url(#prairie3)"/>
+          <ellipse cx="350" cy="280" rx="360" ry="45" fill="#a07010"/>
+          <!-- Grass tufts -->
+          <g fill="#8b6914">
+            <ellipse cx="100" cy="255" rx="18" ry="8"/><ellipse cx="200" cy="265" rx="14" ry="6"/><ellipse cx="320" cy="260" rx="20" ry="7"/><ellipse cx="500" cy="258" rx="16" ry="7"/><ellipse cx="620" cy="263" rx="15" ry="6"/>
+          </g>
+          <!-- 14 babies (small peach circles with tiny underwear) arranged in group -->
+          <g id="babies">
+            <circle cx="140" cy="228" r="14" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="133" y="236" width="14" height="8" rx="3" fill="#27ae60"/>
+            <circle cx="172" cy="235" r="14" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="165" y="243" width="14" height="8" rx="3" fill="#27ae60"/>
+            <circle cx="156" cy="212" r="12" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="150" y="219" width="12" height="7" rx="3" fill="#27ae60"/>
+            <circle cx="188" cy="218" r="13" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="182" y="225" width="12" height="7" rx="3" fill="#27ae60"/>
+            <circle cx="120" cy="213" r="11" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="115" y="219" width="10" height="6" rx="3" fill="#27ae60"/>
+            <circle cx="205" cy="234" r="11" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+            <rect x="200" y="240" width="10" height="6" rx="3" fill="#27ae60"/>
+          </g>
+          <!-- Dead baby with X eyes and mark -->
+          <circle cx="98" cy="248" r="11" fill="#dda0a0" stroke="#c0392b" stroke-width="2"/>
+          <rect x="93" y="254" width="10" height="6" rx="2" fill="#27ae60"/>
+          <line x1="93" y1="244" x2="98" y2="249" stroke="#c0392b" stroke-width="2"/>
+          <line x1="103" y1="244" x2="98" y2="249" stroke="#c0392b" stroke-width="2"/>
+          <circle cx="98" cy="248" r="4" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+          <!-- Cheetah running -->
+          <ellipse cx="470" cy="238" rx="55" ry="25" fill="#e67e22"/>
+          <circle cx="518" cy="220" r="20" fill="#e67e22"/>
+          <!-- spots -->
+          <circle cx="460" cy="230" r="5" fill="#c0392b"/><circle cx="480" cy="242" r="4" fill="#c0392b"/><circle cx="450" cy="245" r="4" fill="#c0392b"/><circle cx="495" cy="232" r="5" fill="#c0392b"/>
+          <!-- eye -->
+          <circle cx="526" cy="216" r="5" fill="#fff"/><circle cx="527" cy="216" r="2.5" fill="#2c3e50"/>
+          <!-- cheetah legs running -->
+          <line x1="440" y1="260" x2="425" y2="285" stroke="#e67e22" stroke-width="9" stroke-linecap="round"/>
+          <line x1="455" y1="262" x2="440" y2="288" stroke="#e67e22" stroke-width="9" stroke-linecap="round"/>
+          <line x1="480" y1="261" x2="490" y2="287" stroke="#e67e22" stroke-width="9" stroke-linecap="round"/>
+          <line x1="495" y1="258" x2="505" y2="284" stroke="#e67e22" stroke-width="9" stroke-linecap="round"/>
+          <!-- Gazelle running -->
+          <ellipse cx="570" cy="230" rx="38" ry="18" fill="#d4a85a"/>
+          <circle cx="600" cy="214" r="16" fill="#d4a85a"/>
+          <!-- antlers -->
+          <line x1="598" y1="199" x2="592" y2="188" stroke="#8b6914" stroke-width="3"/>
+          <line x1="592" y1="188" x2="586" y2="182" stroke="#8b6914" stroke-width="2"/>
+          <line x1="592" y1="188" x2="596" y2="181" stroke="#8b6914" stroke-width="2"/>
+          <line x1="602" y1="199" x2="608" y2="186" stroke="#8b6914" stroke-width="3"/>
+          <!-- poop projectile flying -->
+          <circle cx="340" cy="210" r="11" fill="#8B4513"/>
+          <circle cx="330" cy="205" r="7" fill="#8B4513"/>
+          <circle cx="348" cy="203" r="6" fill="#8B4513"/>
+          <!-- motion lines -->
+          <line x1="290" y1="210" x2="320" y2="210" stroke="#8B4513" stroke-width="2.5" stroke-dasharray="5,3"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#fff" font-style="italic">Poop storm incoming! Befriend that cheetah!</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>Fifteen babies popped out of the smoky big blast,</span>
+          <span>each with green underwear, going quite fast.</span>
+          <span>But one had a mark! And another let a fart —</span>
+          <span>and the marked baby died. Fourteen made a fresh start.</span>
+        </div>
+        <p>The fourteen babies wandered out onto the golden prairie, blinking in the sunshine. They had never seen a prairie before. They had only just been born, after all — roughly forty-five seconds ago.</p>
+        <div class="verse">
+          <span>A cheetah was chasing a gazelle cross the land,</span>
+          <span>and the babies knew just what to do — they had a plan!</span>
+          <span>They launched a great POOP STORM at the gazelle's rear,</span>
+          <span>and the gazelle dropped down — and the cheetah gave a cheer.</span>
+        </div>
+        <p>The Cheetah skidded to a halt, stared at the babies, and declared them to be the most impressive creatures it had ever seen. From that moment on, the Cheetah was their <strong>BFF</strong> — Best Friend Forever.</p>
+        <div class="fun-fact"><span class="fun-fact-star">⭐</span><span><strong>Fun Fact:</strong> All Hairless Butt Cheeks wear underwear. The babies each came with their own pair, pre-fitted, right out of the explosion. Nobody knows how.</span></div>
+      </div>
+    </div>
+
+    <!-- CH 4 -->
+    <div class="page" id="p4">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Four</div>
+        <div class="ch-title">The Ghost</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="ghost4" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#2d1050"/><stop offset="100%" stop-color="#0d0520"/></radialGradient>
+          </defs>
+          <rect width="700" height="300" fill="url(#ghost4)"/>
+          <!-- Stars -->
+          <circle cx="80" cy="40" r="2" fill="#fff" opacity="0.8"/>
+          <circle cx="200" cy="20" r="1.5" fill="#fff" opacity="0.7"/>
+          <circle cx="400" cy="35" r="2" fill="#fff" opacity="0.9"/>
+          <circle cx="600" cy="25" r="1.5" fill="#fff" opacity="0.7"/>
+          <circle cx="150" cy="70" r="1" fill="#fff"/>
+          <circle cx="550" cy="60" r="1.5" fill="#fff" opacity="0.8"/>
+          <!-- Ghost -->
+          <path d="M220 80 Q220 40 260 35 Q300 30 310 70 L310 180 Q295 165 280 180 Q265 195 250 180 Q235 165 220 180 Z" fill="rgba(200,180,255,0.85)" stroke="#9b59b6" stroke-width="2"/>
+          <!-- ghost face evil -->
+          <circle cx="248" cy="100" r="7" fill="#4a0080"/>
+          <circle cx="278" cy="100" r="7" fill="#4a0080"/>
+          <!-- evil eyebrows -->
+          <path d="M240 90 Q248 84 256 90" fill="none" stroke="#4a0080" stroke-width="3"/>
+          <path d="M270 90 Q278 84 286 90" fill="none" stroke="#4a0080" stroke-width="3"/>
+          <path d="M242 118 Q263 128 280 118" fill="none" stroke="#4a0080" stroke-width="3" stroke-linecap="round"/>
+          <!-- Witch Doctor -->
+          <circle cx="470" cy="160" r="32" fill="#8e44ad"/>
+          <rect x="452" y="185" width="36" height="60" rx="8" fill="#6c3483"/>
+          <!-- hat -->
+          <polygon points="445,155 470,90 495,155" fill="#2c3e50"/>
+          <rect x="435" y="150" width="70" height="10" rx="5" fill="#2c3e50"/>
+          <!-- star on hat -->
+          <text x="470" y="130" text-anchor="middle" font-size="16" fill="#f1c40f">★</text>
+          <!-- spray bottles -->
+          <rect x="492" y="160" width="16" height="32" rx="5" fill="#27ae60"/>
+          <text x="500" y="172" text-anchor="middle" font-size="7" fill="#fff">NICE</text>
+          <rect x="512" y="160" width="16" height="32" rx="5" fill="#e74c3c"/>
+          <text x="520" y="170" text-anchor="middle" font-size="6" fill="#fff">HBC</text>
+          <!-- spray going to ghost -->
+          <path d="M510 160 Q380 100 310 110" fill="none" stroke="#a8e6cf" stroke-width="3" stroke-dasharray="6,4" opacity="0.8"/>
+          <!-- Giraffe at zoo -->
+          <rect x="570" y="140" width="100" height="140" rx="6" fill="#d4a85a" opacity="0.3" stroke="#c8960c" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="620" y="158" text-anchor="middle" font-size="9" fill="#c8960c">ZOO</text>
+          <!-- giraffe neck -->
+          <rect x="600" y="160" width="22" height="80" rx="10" fill="#e8c060"/>
+          <!-- giraffe head -->
+          <ellipse cx="611" cy="152" rx="18" ry="14" fill="#e8c060"/>
+          <!-- spots -->
+          <ellipse cx="605" cy="195" rx="7" ry="9" fill="#c8960c" opacity="0.5"/>
+          <ellipse cx="615" cy="215" rx="6" ry="8" fill="#c8960c" opacity="0.5"/>
+          <!-- giraffe eye -->
+          <circle cx="618" cy="148" r="4" fill="#fff"/><circle cx="619" cy="148" r="2" fill="#333"/>
+          <!-- underwear dangling -->
+          <rect x="600" y="143" width="22" height="13" rx="4" fill="#27ae60" stroke="#1e8449" stroke-width="2"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#a8e6cf" font-style="italic">The ghost turned good — and then a giraffe stole the underwear!</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>The babies, the Cheetah — they fell in a hole!</span>
+          <span>The Cheetah dug upward, brave heart and brave soul.</span>
+          <span>But a lion was waiting at the top of the gap,</span>
+          <span>and swallowed them all in one terrible snap.</span>
+        </div>
+        <p>Nobody had noticed something important: when the original Hairless Butt Cheek exploded at the doctor's office, he had left behind an <strong>evil ghost</strong>. The ghost floated through the night, cackling, planning terrible revenge on everyone.</p>
+        <div class="verse">
+          <span>The ghost found the Witch Doctor's rickety shack,</span>
+          <span>and burst through the door with a mighty crack!</span>
+          <span>But the doctor was testing his sprays — NICE and HBC —</span>
+          <span>and a patient kept fanning them right back at thee.</span>
+        </div>
+        <p>The sprays hit the ghost. Both at once. The ghost stopped cackling. Its mark vanished. Its underwear turned a brilliant, vivid <strong>green</strong>. The Hairless Butt Cheek was himself again — alive, happy, and extremely well-dressed.</p>
+        <p>He went to the zoo to celebrate. A giraffe looked at his green underwear. The giraffe thought it was a leaf. The giraffe <em>yanked</em>. HBC pooped directly in the giraffe's mouth. The giraffe died. He got the underwear back.</p>
+      </div>
+    </div>
+
+    <!-- CH 5 -->
+    <div class="page" id="p5">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Five</div>
+        <div class="ch-title">The Car</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="city5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1c1c3e"/><stop offset="100%" stop-color="#0a0a1a"/></linearGradient>
+          </defs>
+          <rect width="700" height="300" fill="url(#city5)"/>
+          <!-- Buildings -->
+          <rect x="30" y="80" width="70" height="200" fill="#1a2a4a" stroke="#2a3a5a" stroke-width="2"/>
+          <rect x="110" y="120" width="50" height="160" fill="#1a3a5a" stroke="#2a4a6a" stroke-width="2"/>
+          <!-- windows -->
+          <rect x="40" y="95" width="12" height="12" fill="#f1c40f" opacity="0.8"/><rect x="62" y="95" width="12" height="12" fill="#f1c40f" opacity="0.4"/><rect x="84" y="95" width="12" height="12" fill="#f1c40f" opacity="0.9"/>
+          <rect x="40" y="118" width="12" height="12" fill="#f1c40f" opacity="0.3"/><rect x="62" y="118" width="12" height="12" fill="#f1c40f" opacity="0.8"/><rect x="84" y="118" width="12" height="12" fill="#f1c40f" opacity="0.6"/>
+          <!-- Dealership sign -->
+          <rect x="170" y="100" width="180" height="60" rx="8" fill="#27ae60"/>
+          <text x="260" y="127" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#fff" font-weight="bold">CARS FOR SALE</text>
+          <text x="260" y="148" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="#aef" font-style="italic">(probably fine)</text>
+          <!-- HBC scared in car -->
+          <rect x="155" y="200" width="90" height="52" rx="12" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+          <!-- wheels -->
+          <circle cx="175" cy="255" r="12" fill="#333" stroke="#555" stroke-width="2"/>
+          <circle cx="225" cy="255" r="12" fill="#333" stroke="#555" stroke-width="2"/>
+          <!-- windshield -->
+          <rect x="165" y="208" width="72" height="32" rx="6" fill="#7fb3d3" opacity="0.8"/>
+          <!-- HBC peeking scared from car -->
+          <circle cx="200" cy="218" r="16" fill="#ffb347"/>
+          <!-- scared eyes -->
+          <circle cx="193" cy="213" r="5" fill="#fff"/><circle cx="193" cy="213" r="2.5" fill="#000"/>
+          <circle cx="207" cy="213" r="5" fill="#fff"/><circle cx="207" cy="213" r="2.5" fill="#000"/>
+          <!-- squiggly nervous mouth -->
+          <path d="M192 224 Q196 220 200 224 Q204 228 208 224" fill="none" stroke="#333" stroke-width="2"/>
+          <!-- sweat drops -->
+          <ellipse cx="183" cy="210" rx="4" ry="6" fill="#3498db" opacity="0.8"/>
+          <ellipse cx="218" cy="208" rx="3" ry="5" fill="#3498db" opacity="0.8"/>
+          <!-- poop in pants indicator -->
+          <path d="M190 240 Q200 248 210 240" fill="#8B4513" opacity="0.7"/>
+          <!-- Manager figure -->
+          <rect x="420" y="170" width="44" height="80" rx="8" fill="#8e44ad"/>
+          <circle cx="442" cy="158" r="22" fill="#fde3a7"/>
+          <!-- angry face -->
+          <path d="M430 150 Q435 144 442 148 Q449 144 454 150" fill="none" stroke="#c0392b" stroke-width="3"/>
+          <circle cx="435" cy="160" r="4" fill="#333"/>
+          <circle cx="449" cy="160" r="4" fill="#333"/>
+          <path d="M432 170 Q442 164 452 170" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- speech bubble -->
+          <rect x="465" y="120" width="200" height="50" rx="12" fill="#fff" stroke="#8e44ad" stroke-width="2"/>
+          <polygon points="470,165 480,175 490,165" fill="#fff" stroke="#8e44ad" stroke-width="1"/>
+          <text x="565" y="143" text-anchor="middle" font-size="11" fill="#8e44ad" font-weight="bold">"Our cars are NOT</text>
+          <text x="565" y="160" text-anchor="middle" font-size="11" fill="#8e44ad" font-weight="bold">bad quality!"</text>
+          <!-- Ocean -->
+          <path d="M0 265 Q175 245 350 265 Q525 285 700 265 L700 300 L0 300Z" fill="#2980b9" opacity="0.8"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#aef" font-style="italic">The manager disagreed. He should not have done that.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>He wanted a car. So he bought one that night.</span>
+          <span>But he sat in the seat and turned green with fright.</span>
+          <span>He tried once — and pooped! The car stalled with a groan.</span>
+          <span>So he walked to the dealership. Quite alone.</span>
+        </div>
+        <p>"Your cars are bad quality!" said the Hairless Butt Cheek. "No they are NOT," said the manager. "You cannot talk back to me," said HBC. The manager did not listen. This was a mistake.</p>
+        <div class="verse">
+          <span>He pooped in the manager's butt hole right there.</span>
+          <span>The manager died. It was perfectly fair.</span>
+          <span>Then he stole the manager's car — far superior indeed —</span>
+          <span>and drove it straight into the ocean at speed.</span>
+        </div>
+        <p>SPLASH. The car sank gently to the ocean floor and settled into the sand. The Hairless Butt Cheek looked around. It was quiet down there. Peaceful. The fish were pleasant company. This was <strong>home</strong> now.</p>
+        <p>The only problem: no furniture. And no money to buy any.</p>
+      </div>
+    </div>
+
+    <!-- CH 6 -->
+    <div class="page" id="p6">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Six</div>
+        <div class="ch-title">The Pig</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="toilet6" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a3a2a"/><stop offset="100%" stop-color="#0f2218"/></linearGradient>
+          </defs>
+          <rect width="700" height="300" fill="url(#toilet6)"/>
+          <!-- Park scene on left (normal world) -->
+          <ellipse cx="110" cy="265" rx="90" ry="25" fill="#2d6a1a"/>
+          <ellipse cx="90" cy="210" rx="35" ry="50" fill="#1a5a0a"/>
+          <rect x="86" y="245" width="8" height="40" fill="#6b3a1a"/>
+          <!-- Wig on grass -->
+          <ellipse cx="160" cy="255" rx="20" ry="12" fill="#8e44ad" stroke="#9b59b6" stroke-width="2"/>
+          <path d="M148 252 Q155 240 162 252 Q169 240 176 252" fill="#8e44ad" stroke="#9b59b6" stroke-width="2"/>
+          <text x="160" y="245" text-anchor="middle" font-size="8" fill="#ffd700">WIG</text>
+          <!-- Portal -->
+          <ellipse cx="230" cy="240" rx="30" ry="40" fill="none" stroke="#9b59b6" stroke-width="4"/>
+          <ellipse cx="230" cy="240" rx="22" ry="30" fill="rgba(155,89,182,0.3)"/>
+          <!-- spiral inside portal -->
+          <path d="M230 218 Q244 222 246 237 Q248 252 234 258 Q220 264 216 250" fill="none" stroke="#e8d5ff" stroke-width="2.5" opacity="0.8"/>
+          <!-- Piglwiglskunkl pig -->
+          <circle cx="195" cy="248" r="22" fill="#ff9aa2" stroke="#e74c3c" stroke-width="2"/>
+          <rect x="184" y="262" width="22" height="12" rx="4" fill="#27ae60"/>
+          <!-- pig snout -->
+          <ellipse cx="195" cy="255" rx="9" ry="7" fill="#ff7b8a"/>
+          <circle cx="191" cy="255" r="2.5" fill="#c0392b"/><circle cx="199" cy="255" r="2.5" fill="#c0392b"/>
+          <!-- pig eyes -->
+          <circle cx="189" cy="243" r="4" fill="#fff"/><circle cx="190" cy="243" r="2" fill="#333"/>
+          <circle cx="201" cy="243" r="4" fill="#fff"/><circle cx="202" cy="243" r="2" fill="#333"/>
+          <!-- CHARLIE TOILET on right (big, evil) -->
+          <rect x="380" y="150" width="120" height="130" rx="18" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="4"/>
+          <!-- toilet seat -->
+          <ellipse cx="440" cy="155" rx="55" ry="22" fill="#d5dbdb" stroke="#bdc3c7" stroke-width="3"/>
+          <ellipse cx="440" cy="150" rx="40" ry="15" fill="#e8eaed"/>
+          <!-- toilet eyes evil -->
+          <circle cx="422" cy="195" r="10" fill="#e74c3c"/><circle cx="424" cy="195" r="5" fill="#fff"/>
+          <circle cx="458" cy="195" r="10" fill="#e74c3c"/><circle cx="460" cy="195" r="5" fill="#fff"/>
+          <!-- angry brows -->
+          <path d="M412 182 Q422 175 432 182" fill="none" stroke="#c0392b" stroke-width="4"/>
+          <path d="M448 182 Q458 175 468 182" fill="none" stroke="#c0392b" stroke-width="4"/>
+          <!-- evil grin -->
+          <path d="M415 215 Q440 230 465 215" fill="none" stroke="#c0392b" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- Nerd glasses surprise element -->
+          <rect x="406" y="188" width="24" height="14" rx="3" fill="none" stroke="#3498db" stroke-width="3"/>
+          <rect x="434" y="188" width="24" height="14" rx="3" fill="none" stroke="#3498db" stroke-width="3"/>
+          <line x1="430" y1="195" x2="434" y2="195" stroke="#3498db" stroke-width="3"/>
+          <!-- Benny bear -->
+          <circle cx="580" cy="230" r="32" fill="#d4a85a" stroke="#b8860b" stroke-width="3"/>
+          <circle cx="558" cy="208" r="14" fill="#d4a85a" stroke="#b8860b" stroke-width="2"/>
+          <circle cx="602" cy="208" r="14" fill="#d4a85a" stroke="#b8860b" stroke-width="2"/>
+          <!-- bear eyes -->
+          <circle cx="572" cy="228" r="5" fill="#333"/>
+          <circle cx="588" cy="228" r="5" fill="#333"/>
+          <!-- turkey in mouth -->
+          <text x="580" y="252" text-anchor="middle" font-size="14">🦃</text>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#c9b3ff" font-style="italic">Charlie the Toilet. The nerd glasses were Benny's idea.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>Now Piglwiglskunkl was a pig of great fame,</span>
+          <span>a friend of the Butt Cheek — quite wild, quite tame.</span>
+          <span>He found a strange wig on the grass in the park,</span>
+          <span>put it on — and a portal appeared in the dark!</span>
+        </div>
+        <p>He stepped through and fell asleep. When he woke up, he was inside a toilet bowl. A <em>toy</em> toilet bowl. He had been shrunk down. And the toilet — was <strong>Charlie</strong>. His sworn enemy.</p>
+        <p>Charlie had a pet owl named <strong>Evil Eye</strong>, whose entire job was to peck Piglwiglskunkl. Things looked grim.</p>
+        <div class="verse">
+          <span>But along came big Benny, a bear with a feast —</span>
+          <span>"It's Thanksgiving!" he said. "And I want that owl beast!"</span>
+          <span>He ate Evil Eye. Then he secretly placed</span>
+          <span>some nerd glasses on Charlie — right on his face.</span>
+        </div>
+        <p>When Charlie noticed the glasses, he was so enraged that he <strong>exploded</strong>. Piglwiglskunkl threw a party. Everyone came. Benny, however, forgot his underwear on the way out.</p>
+      </div>
+    </div>
+
+    <!-- CH 7 -->
+    <div class="page" id="p7">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Seven</div>
+        <div class="ch-title">The Pigless Underwear</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="300" fill="#1a1408"/>
+          <!-- Ground -->
+          <rect x="0" y="240" width="700" height="60" fill="#2a1e0a"/>
+          <!-- Pig and Bear fighting -->
+          <circle cx="200" cy="210" r="28" fill="#ff9aa2" stroke="#e74c3c" stroke-width="3"/>
+          <rect x="188" y="232" width="24" height="14" rx="5" fill="#27ae60"/>
+          <ellipse cx="200" cy="220" rx="10" ry="8" fill="#ff7b8a"/>
+          <!-- pig mad face -->
+          <circle cx="193" cy="202" r="4" fill="#c0392b"/><circle cx="207" cy="202" r="4" fill="#c0392b"/>
+          <path d="M192 216 Q200 212 208 216" fill="none" stroke="#c0392b" stroke-width="2"/>
+          <!-- Bear -->
+          <circle cx="290" cy="210" r="30" fill="#d4a85a" stroke="#b8860b" stroke-width="3"/>
+          <circle cx="268" cy="188" r="13" fill="#d4a85a" stroke="#b8860b" stroke-width="2"/>
+          <circle cx="312" cy="188" r="13" fill="#d4a85a" stroke="#b8860b" stroke-width="2"/>
+          <circle cx="282" cy="208" r="5" fill="#333"/><circle cx="298" cy="208" r="5" fill="#333"/>
+          <path d="M280 222 Q290 218 300 222" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+          <!-- Underwear floated between them -->
+          <rect x="233" y="195" width="34" height="20" rx="6" fill="#f39c12" stroke="#e67e22" stroke-width="2.5"/>
+          <!-- fight sparks -->
+          <text x="245" y="182" font-size="18">💢</text>
+          <!-- HBC with poop flying -->
+          <circle cx="120" cy="215" r="26" fill="#ffb347" stroke="#e8872a" stroke-width="3"/>
+          <rect x="108" y="234" width="24" height="14" rx="5" fill="#27ae60"/>
+          <!-- poop projectiles -->
+          <circle cx="155" cy="208" r="9" fill="#8B4513"/>
+          <circle cx="168" cy="202" r="7" fill="#8B4513"/>
+          <circle cx="179" cy="198" r="6" fill="#8B4513"/>
+          <!-- Pet store -->
+          <rect x="380" y="150" width="130" height="120" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="3"/>
+          <text x="445" y="178" text-anchor="middle" font-size="13" fill="#27ae60" font-weight="bold">PET STORE</text>
+          <!-- Sheep in window -->
+          <ellipse cx="445" cy="225" rx="30" ry="22" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>
+          <ellipse cx="430" cy="228" rx="12" ry="10" fill="#ecf0f1"/>
+          <ellipse cx="460" cy="228" rx="12" ry="10" fill="#ecf0f1"/>
+          <circle cx="445" cy="215" r="14" fill="#bdc3c7"/>
+          <text x="445" y="247" text-anchor="middle" font-size="9" fill="#27ae60" font-weight="bold">SHINSHONG SHEEP</text>
+          <!-- Bomb car -->
+          <rect x="540" y="200" width="100" height="55" rx="12" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+          <circle cx="558" cy="258" r="12" fill="#333"/><circle cx="622" cy="258" r="12" fill="#333"/>
+          <!-- bomb on roof -->
+          <circle cx="590" cy="193" r="16" fill="#2c3e50" stroke="#e74c3c" stroke-width="2"/>
+          <text x="590" y="198" text-anchor="middle" font-size="14">💣</text>
+          <!-- Bee -->
+          <ellipse cx="608" cy="175" rx="10" ry="7" fill="#f1c40f" stroke="#e67e22" stroke-width="1.5"/>
+          <text x="608" y="179" text-anchor="middle" font-size="10">🐝</text>
+          <!-- Explosion lines -->
+          <line x1="590" y1="160" x2="575" y2="140" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4,3"/>
+          <line x1="600" y1="158" x2="618" y2="140" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4,3"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#e8c070" font-style="italic">The bee saved the day. Shinshong Sheep was bomb-proof all along.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>After the party the guests all went home,</span>
+          <span>and Piglwiglskunkl was left there alone.</span>
+          <span>He found some stray underwear — Benny's no doubt!</span>
+          <span>He put them right on and he strutted about.</span>
+        </div>
+        <p>Then the underwear vanished. He found Benny wearing them. "Hand them over!" said Pig. "No," said Bear. A fight broke out. The Hairless Butt Cheek pooped on <em>both</em> of them. They both died. The underwear lay unclaimed on the floor.</p>
+        <p>HBC went to the pet store and bought a sheep named <strong>Shinshong Sheep</strong>, who was certified 100% bomb-proof. The same could not be said for his car.</p>
+        <div class="verse">
+          <span>Someone had planted a bomb on his car!</span>
+          <span>He hadn't yet noticed. Walked up from afar.</span>
+          <span>But a bee flew inside — and he stopped, turned away.</span>
+          <span>KABOOM! The car blew. He was safe! What a day!</span>
+        </div>
+        <p>He ran back to the bee and thanked it sincerely. The bee said nothing. It was a bee. But it buzzed in a way that felt very warm.</p>
+      </div>
+    </div>
+
+    <!-- CH 8 -->
+    <div class="page" id="p8">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Eight</div>
+        <div class="ch-title">The Flying Pig</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky8" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#040510"/><stop offset="100%" stop-color="#0a0a2a"/></linearGradient>
+          </defs>
+          <rect width="700" height="300" fill="url(#sky8)"/>
+          <!-- Stars -->
+          <circle cx="50" cy="30" r="2" fill="#fff" opacity="0.9"/><circle cx="180" cy="15" r="1.5" fill="#fff" opacity="0.8"/>
+          <circle cx="350" cy="25" r="2" fill="#fff" opacity="0.7"/><circle cx="500" cy="10" r="1.5" fill="#fff" opacity="0.9"/>
+          <circle cx="640" cy="35" r="2" fill="#fff" opacity="0.8"/><circle cx="120" cy="60" r="1" fill="#fff"/>
+          <circle cx="420" cy="50" r="1.5" fill="#fff" opacity="0.7"/>
+          <!-- Rocket pig descending -->
+          <ellipse cx="350" cy="80" rx="32" ry="24" fill="#ff9aa2" stroke="#e74c3c" stroke-width="3"/>
+          <ellipse cx="350" cy="92" rx="22" ry="14" fill="#ff7b8a"/>
+          <!-- pig face -->
+          <circle cx="342" cy="75" r="5" fill="#fff"/><circle cx="343" cy="75" r="2.5" fill="#333"/>
+          <circle cx="358" cy="75" r="5" fill="#fff"/><circle cx="359" cy="75" r="2.5" fill="#333"/>
+          <!-- ROCKET SHOES upside down (pointing up as pig goes DOWN) -->
+          <rect x="330" y="56" width="18" height="28" rx="5" fill="#e74c3c"/>
+          <rect x="352" y="56" width="18" height="28" rx="5" fill="#e74c3c"/>
+          <!-- flame out top -->
+          <path d="M335 56 Q339 40 343 56" fill="#f39c12"/>
+          <path d="M357 56 Q361 40 365 56" fill="#f39c12"/>
+          <!-- KABLOOSH crater at bottom -->
+          <ellipse cx="350" cy="280" rx="80" ry="25" fill="#e74c3c" opacity="0.7"/>
+          <line x1="350" y1="255" x2="300" y2="220" stroke="#f39c12" stroke-width="4"/>
+          <line x1="350" y1="255" x2="400" y2="220" stroke="#f39c12" stroke-width="4"/>
+          <line x1="350" y1="255" x2="350" y2="210" stroke="#f39c12" stroke-width="4"/>
+          <line x1="350" y1="255" x2="280" y2="240" stroke="#f39c12" stroke-width="3"/>
+          <line x1="350" y1="255" x2="420" y2="240" stroke="#f39c12" stroke-width="3"/>
+          <text x="350" y="265" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#fff" font-weight="bold">KABLOOSH!</text>
+          <!-- Bacon strips raining down -->
+          <rect x="100" y="140" width="35" height="14" rx="4" fill="#c0392b" transform="rotate(-20 117 147)"/>
+          <rect x="180" y="110" width="35" height="14" rx="4" fill="#c0392b" transform="rotate(15 197 117)"/>
+          <rect x="460" y="130" width="35" height="14" rx="4" fill="#c0392b" transform="rotate(-10 477 137)"/>
+          <rect x="560" y="145" width="35" height="14" rx="4" fill="#c0392b" transform="rotate(25 577 152)"/>
+          <rect x="250" y="155" width="35" height="14" rx="4" fill="#c0392b" transform="rotate(-30 267 162)"/>
+          <!-- Couch store (right side) being hit -->
+          <rect x="540" y="200" width="130" height="90" rx="8" fill="#d5e8d4" stroke="#82b366" stroke-width="3"/>
+          <text x="605" y="225" text-anchor="middle" font-size="11" fill="#27ae60" font-weight="bold">COUCH</text>
+          <text x="605" y="240" text-anchor="middle" font-size="11" fill="#27ae60" font-weight="bold">STORE</text>
+          <!-- couches flying out -->
+          <rect x="500" y="190" width="36" height="22" rx="5" fill="#9b59b6" transform="rotate(-25 518 201)"/>
+          <rect x="460" y="170" width="30" height="18" rx="4" fill="#3498db" transform="rotate(15 475 179)"/>
+          <!-- HBC celebrating with arms up -->
+          <circle cx="130" cy="228" r="28" fill="#ffb347" stroke="#e8872a" stroke-width="3"/>
+          <rect x="118" y="248" width="24" height="14" rx="5" fill="#27ae60"/>
+          <!-- happy eyes -->
+          <path d="M120 220 Q129 213 138 220" fill="none" stroke="#333" stroke-width="2.5"/>
+          <path d="M140 220 Q149 213 158 220" fill="none" stroke="#333" stroke-width="2.5"/>
+          <path d="M122 233 Q130 242 138 233" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- arms up -->
+          <line x1="108" y1="235" x2="88" y2="210" stroke="#ffb347" stroke-width="10" stroke-linecap="round"/>
+          <line x1="152" y1="235" x2="172" y2="210" stroke="#ffb347" stroke-width="10" stroke-linecap="round"/>
+          <text x="350" y="296" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#f39c12" font-style="italic">It rained bacon. Best day in recorded butt cheek history.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>He needed some furniture. He had no cash.</span>
+          <span>He thought for a while, then came up with a dash</span>
+          <span>of genius: rocket-booster shoes for a pig!</span>
+          <span>Transport of the future! Really quite big!</span>
+        </div>
+        <p>Nobody bought them. He was furious. So he took the rocket booster shoes, flipped them <em>upside down</em>, attached them to a pig, flew it into the sky, and pressed the button. The pig shot <strong>downward</strong>.</p>
+        <div class="verse">
+          <span>KABLOOSH!!! The pig hit the Earth with a crack!</span>
+          <span>It sounded like thunder! The sky folded back!</span>
+          <span>And then — oh what wonder — it started to rain...</span>
+          <span>not water, not hailstones, but BACON. Insane.</span>
+        </div>
+        <p>It was the best day ever. The pig crashed through the roof of a couch store and all the furniture flew directly into the Hairless Butt Cheek's underwater car home below.</p>
+        <p>The couch store owner gave everything away for free. He had no choice. A pig had just come through the ceiling.</p>
+        <div class="fun-fact"><span class="fun-fact-star">🥓</span><span><strong>Meanwhile:</strong> A duck nearby smelled the bacon rain. The duck was allergic to bacon. The duck ate the bacon anyway.</span></div>
+      </div>
+    </div>
+
+    <!-- CH 9 -->
+    <div class="page" id="p9">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Nine</div>
+        <div class="ch-title">The Brainless Duck</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="300" fill="#1a2030"/>
+          <!-- City buildings -->
+          <rect x="0" y="100" width="60" height="200" fill="#1a2a4a" stroke="#2a3a5a" stroke-width="2"/>
+          <rect x="70" y="140" width="50" height="160" fill="#0f1e35"/><rect x="640" y="120" width="60" height="180" fill="#1a2a4a" stroke="#2a3a5a" stroke-width="2"/>
+          <!-- Ground -->
+          <rect x="0" y="260" width="700" height="40" fill="#111"/>
+          <!-- Duck hero pose -->
+          <ellipse cx="180" cy="230" rx="38" ry="28" fill="#f1c40f" stroke="#d4ac0d" stroke-width="3"/>
+          <ellipse cx="210" cy="215" rx="22" ry="18" fill="#f1c40f" stroke="#d4ac0d" stroke-width="2"/>
+          <!-- duck beak -->
+          <path d="M222 215 L240 210 L222 220Z" fill="#e67e22"/>
+          <!-- superhero cape -->
+          <path d="M160 232 Q145 255 155 278 Q170 255 180 258" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+          <!-- duck eyes confused -->
+          <circle cx="216" cy="210" r="5" fill="#fff"/><circle cx="217" cy="210" r="2.5" fill="#333"/>
+          <!-- question marks around head -->
+          <text x="230" y="196" font-size="14" fill="#f1c40f">?</text>
+          <text x="200" y="188" font-size="12" fill="#f1c40f">?</text>
+          <!-- Mean man -->
+          <rect x="350" y="180" width="44" height="80" rx="8" fill="#e74c3c"/>
+          <circle cx="372" cy="166" r="22" fill="#fde3a7"/>
+          <!-- mean face -->
+          <path d="M360 158 Q366 150 374 155 Q382 150 388 158" fill="none" stroke="#c0392b" stroke-width="3"/>
+          <circle cx="364" cy="168" r="4" fill="#333"/>
+          <circle cx="380" cy="168" r="4" fill="#333"/>
+          <path d="M362 178 Q372 172 382 178" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Kid behind man -->
+          <rect x="340" y="210" width="28" height="50" rx="6" fill="#3498db"/>
+          <circle cx="354" cy="196" r="16" fill="#fde3a7"/>
+          <circle cx="349" cy="192" r="3" fill="#333"/><circle cx="359" cy="192" r="3" fill="#333"/>
+          <!-- tree duck bounced off -->
+          <ellipse cx="540" cy="180" rx="45" ry="65" fill="#1a5a0a"/>
+          <ellipse cx="540" cy="150" rx="32" ry="45" fill="#22880e"/>
+          <rect x="535" y="230" width="10" height="60" fill="#6b3a1a"/>
+          <!-- IMPACT star at tree -->
+          <text x="555" y="175" font-size="22" fill="#f1c40f">💥</text>
+          <!-- duck trajectory arc -->
+          <path d="M218 226 Q380 120 530 180" fill="none" stroke="#f1c40f" stroke-width="2.5" stroke-dasharray="8,5" marker-end="url(#a)"/>
+          <!-- return arc -->
+          <path d="M560 188 Q460 100 380 190" fill="none" stroke="#f1c40f" stroke-width="2.5" stroke-dasharray="8,5"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#d4e6f1" font-style="italic">The duck, the tree, the man — and now his name is Antmucky Fat Soup.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>The duck ate the bacon. The bacon was wrong.</span>
+          <span>Something went POP where his brain had been strong.</span>
+          <span>His brain tumbled out. He felt terribly free.</span>
+          <span>"I don't know who I am!" he said. "But a hero? That's me!"</span>
+        </div>
+        <p>The brainless duck saw a mean man bullying a small child on the street. He squared up. He ran at the man. He punched.</p>
+        <p>The man punched back. The duck went flying — straight into a tree. He bounced off the tree like a rubber ball and hit the man <em>directly</em> in the face with tremendous momentum.</p>
+        <div class="verse">
+          <span>The man flew and skidded and came to a stop.</span>
+          <span>From now and forever — to the very last drop —</span>
+          <span>his name would be different, no longer the same:</span>
+          <span>Antmucky Fat Soup was his permanent name.</span>
+        </div>
+        <p>The kid was impressed. The duck was confused. And Antmucky Fat Soup had a very sore face.</p>
+      </div>
+    </div>
+
+    <!-- CH 10 -->
+    <div class="page" id="p10">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Ten</div>
+        <div class="ch-title">Antmucky Fat Soup</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="300" fill="#1a2030"/>
+          <!-- Doctor office -->
+          <rect x="30" y="120" width="140" height="150" rx="10" fill="#d5e8d4" stroke="#82b366" stroke-width="3"/>
+          <text x="100" y="148" text-anchor="middle" font-size="11" fill="#27ae60" font-weight="bold">DOC</text>
+          <text x="100" y="163" text-anchor="middle" font-size="9" fill="#27ae60">ANTYSIMPHALEANA</text>
+          <!-- Doctor character -->
+          <rect x="70" y="200" width="36" height="55" rx="6" fill="#ecf0f1"/>
+          <circle cx="88" cy="188" r="18" fill="#fde3a7"/>
+          <!-- doctor glasses -->
+          <circle cx="82" cy="186" r="6" fill="none" stroke="#3498db" stroke-width="2"/>
+          <circle cx="94" cy="186" r="6" fill="none" stroke="#3498db" stroke-width="2"/>
+          <line x1="88" y1="186" x2="88" y2="186" stroke="#3498db" stroke-width="2"/>
+          <!-- smart spray bottle -->
+          <rect x="105" y="198" width="18" height="35" rx="5" fill="#9b59b6"/>
+          <text x="114" y="210" text-anchor="middle" font-size="6" fill="#fff">SMART</text>
+          <text x="114" y="220" text-anchor="middle" font-size="6" fill="#fff">JUICE</text>
+          <!-- Duck/Antmucky -->
+          <ellipse cx="260" cy="228" rx="35" ry="26" fill="#f1c40f" stroke="#d4ac0d" stroke-width="3"/>
+          <ellipse cx="287" cy="214" rx="20" ry="16" fill="#f1c40f" stroke="#d4ac0d" stroke-width="2"/>
+          <path d="M298 215 L315 210 L298 220Z" fill="#e67e22"/>
+          <!-- BIG BRAIN growing from head, giant purple -->
+          <ellipse cx="287" cy="180" rx="50" ry="40" fill="#9b59b6" stroke="#8e44ad" stroke-width="3" opacity="0.9"/>
+          <!-- brain folds -->
+          <path d="M250 175 Q265 165 280 175 Q295 165 310 175" fill="none" stroke="#7d3c98" stroke-width="2.5"/>
+          <path d="M245 190 Q260 180 275 190 Q290 180 305 190 Q320 180 335 190" fill="none" stroke="#7d3c98" stroke-width="2.5"/>
+          <!-- lightning bolts = smart -->
+          <text x="287" y="175" text-anchor="middle" font-size="14" fill="#ffd700">⚡</text>
+          <!-- EXPLOSION in middle -->
+          <circle cx="450" cy="160" r="55" fill="#e74c3c" opacity="0.85"/>
+          <text x="450" y="168" text-anchor="middle" font-family="Georgia,serif" font-size="18" fill="#fff" font-weight="bold">POP!</text>
+          <!-- explosion rays -->
+          <line x1="450" y1="105" x2="450" y2="82" stroke="#f39c12" stroke-width="5"/>
+          <line x1="450" y1="215" x2="450" y2="238" stroke="#f39c12" stroke-width="5"/>
+          <line x1="395" y1="160" x2="372" y2="160" stroke="#f39c12" stroke-width="5"/>
+          <line x1="505" y1="160" x2="528" y2="160" stroke="#f39c12" stroke-width="5"/>
+          <line x1="411" y1="121" x2="392" y2="102" stroke="#f39c12" stroke-width="4"/>
+          <line x1="489" y1="121" x2="508" y2="102" stroke="#f39c12" stroke-width="4"/>
+          <!-- Earth splitting -->
+          <circle cx="590" cy="200" r="60" fill="#2980b9" stroke="#1a5276" stroke-width="3"/>
+          <path d="M590 140 L590 260" fill="none" stroke="#e74c3c" stroke-width="5" stroke-dasharray="8,4"/>
+          <!-- continents rough shapes -->
+          <ellipse cx="572" cy="185" rx="20" ry="28" fill="#27ae60" opacity="0.8"/>
+          <ellipse cx="610" cy="210" rx="18" ry="22" fill="#27ae60" opacity="0.8"/>
+          <!-- split crack widening -->
+          <path d="M580 140 Q575 190 578 260" fill="none" stroke="#e74c3c" stroke-width="3"/>
+          <path d="M600 140 Q605 190 602 260" fill="none" stroke="#e74c3c" stroke-width="3"/>
+          <text x="350" y="295" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#c9b3ff" font-style="italic">Too much Smart Juice. The Earth split in half. Classic side effect.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>Antmucky Fat Soup went to visit the doc,</span>
+          <span>Doc Antysimphaleana — the best on the block.</span>
+          <span>"Smart Juice!" said the doctor. "A spray on your head!</span>
+          <span>You'll be clever again!" — but the brain grew instead.</span>
+        </div>
+        <p>The brain got bigger. And bigger. And <em>bigger</em>. Until — <strong>POP</strong>. Out of the dust came a Brain Monster who knew everything in the world, except karate.</p>
+        <p>He tried karate anyway. He saw a man disrespecting a kid. He punched the man. The man punched back. They flew around the world punching each other. It went on for a very long time.</p>
+        <div class="verse">
+          <span>The kid stopped them both with a wave of one hand,</span>
+          <span>and they slammed to the ground — and it shook all the land!</span>
+          <span>The impact was so mighty, so terribly vast,</span>
+          <span>the Earth cracked in two. The split happened fast.</span>
+        </div>
+        <p>The Earth was now in two halves. This was considered a problem.</p>
+      </div>
+    </div>
+
+    <!-- CH 11 -->
+    <div class="page" id="p11">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Eleven</div>
+        <div class="ch-title">The Dog Race</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="280" fill="#a0c8e8"/>
+          <rect x="0" y="220" width="700" height="60" fill="#c0dff8"/>
+          <ellipse cx="150" cy="228" rx="55" ry="12" fill="rgba(255,255,255,.6)"/>
+          <ellipse cx="350" cy="225" rx="45" ry="10" fill="rgba(255,255,255,.6)"/>
+          <ellipse cx="540" cy="230" rx="50" ry="11" fill="rgba(255,255,255,.6)"/>
+          <!-- Alien sled left -->
+          <ellipse cx="90" cy="210" rx="52" ry="20" fill="#7f8c8d"/>
+          <rect x="64" y="188" width="52" height="26" rx="8" fill="#95a5a6"/>
+          <circle cx="90" cy="177" r="20" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+          <circle cx="82" cy="172" r="5" fill="#fff"/><circle cx="83" cy="172" r="2.5" fill="#333"/>
+          <circle cx="98" cy="172" r="5" fill="#fff"/><circle cx="99" cy="172" r="2.5" fill="#333"/>
+          <line x1="88" y1="158" x2="82" y2="144" stroke="#2ecc71" stroke-width="2"/>
+          <circle cx="82" cy="142" r="4" fill="#f1c40f"/>
+          <line x1="92" y1="158" x2="98" y2="144" stroke="#2ecc71" stroke-width="2"/>
+          <circle cx="98" cy="142" r="4" fill="#f1c40f"/>
+          <text x="90" y="140" text-anchor="middle" font-size="8" fill="#e74c3c" font-weight="bold">7 MILE LEAD!</text>
+          <!-- Winner sled right -->
+          <ellipse cx="580" cy="210" rx="52" ry="20" fill="#e74c3c"/>
+          <rect x="554" y="188" width="52" height="26" rx="8" fill="#c0392b"/>
+          <circle cx="580" cy="175" r="20" fill="#ffb347" stroke="#e8872a" stroke-width="2"/>
+          <rect x="569" y="188" width="22" height="11" rx="4" fill="#27ae60"/>
+          <path d="M570 170 Q580 162 590 170" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M569 183 Q580 191 591 183" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Dead dog sliding -->
+          <ellipse cx="528" cy="214" rx="30" ry="12" fill="#d4a85a" opacity=".85"/>
+          <text x="528" y="217" text-anchor="middle" font-size="12">X_X</text>
+          <line x1="500" y1="214" x2="478" y2="214" stroke="#e74c3c" stroke-width="3" stroke-dasharray="5,3"/>
+          <!-- Finish line -->
+          <rect x="648" y="148" width="12" height="110" fill="none"/>
+          <rect x="640" y="148" width="22" height="16" fill="#333"/>
+          <rect x="640" y="164" width="22" height="16" fill="#fff"/>
+          <rect x="640" y="180" width="22" height="16" fill="#333"/>
+          <rect x="640" y="196" width="22" height="16" fill="#fff"/>
+          <rect x="640" y="212" width="22" height="16" fill="#333"/>
+          <text x="350" y="268" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#1a3a5a" font-style="italic">Lickaleajanickaradoesta won! By a dead dog length.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>An alien appeared with a deal neat and bright:</span>
+          <span>"I have enormous tape to fix the Earth right!</span>
+          <span>But first beat me racing in one dogsled run —</span>
+          <span>from start to the finish — whoever has won!"</span>
+        </div>
+        <p>Lickaleajanickaradoesta stepped up. The race began neck and neck. Then the alien pulled ahead — five miles, six, seven. It looked hopeless. Then the dogs went so fast they started to <em>fly</em>.</p>
+        <div class="verse">
+          <span>The dog flew too fast — and the poor creature died!</span>
+          <span>But its body kept sliding, still moving with pride!</span>
+          <span>It slid past the alien, it slid past the line —</span>
+          <span>Lickaleajanickaradoesta won! Everything fine!</span>
+        </div>
+        <p>The alien handed over the enormous tape. Reluctantly. It was, as it turned out, a bomb.</p>
+      </div>
+    </div>
+
+    <!-- CH 12 -->
+    <div class="page" id="p12">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Twelve</div>
+        <div class="ch-title">The Tape</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="280" fill="#0a0a1a"/>
+          <!-- Split earth -->
+          <circle cx="170" cy="165" r="88" fill="#2980b9" stroke="#1a5276" stroke-width="4"/>
+          <ellipse cx="150" cy="152" rx="26" ry="38" fill="#27ae60" opacity=".8"/>
+          <ellipse cx="192" cy="186" rx="20" ry="26" fill="#27ae60" opacity=".8"/>
+          <path d="M225 118 Q235 165 228 215" fill="none" stroke="#e74c3c" stroke-width="6"/>
+          <circle cx="510" cy="165" r="88" fill="#2980b9" stroke="#1a5276" stroke-width="4"/>
+          <ellipse cx="530" cy="152" rx="26" ry="38" fill="#27ae60" opacity=".8"/>
+          <ellipse cx="488" cy="186" rx="20" ry="26" fill="#27ae60" opacity=".8"/>
+          <path d="M475 118 Q465 165 472 215" fill="none" stroke="#e74c3c" stroke-width="6"/>
+          <!-- Tape / bomb -->
+          <rect x="242" y="150" width="196" height="30" rx="6" fill="#f1c40f" stroke="#d4ac0d" stroke-width="3"/>
+          <text x="340" y="170" text-anchor="middle" font-size="13" fill="#7d6608" font-weight="bold">TAPE = BOMB</text>
+          <circle cx="340" cy="105" r="32" fill="#e74c3c"/>
+          <text x="340" y="98" text-anchor="middle" font-size="10" fill="#fff">TICK TOCK</text>
+          <text x="340" y="115" text-anchor="middle" font-size="22" fill="#fff">💣</text>
+          <!-- explosion rays -->
+          <line x1="340" y1="73" x2="340" y2="55" stroke="#f39c12" stroke-width="5"/>
+          <line x1="308" y1="82" x2="292" y2="68" stroke="#f39c12" stroke-width="4"/>
+          <line x1="372" y1="82" x2="388" y2="68" stroke="#f39c12" stroke-width="4"/>
+          <!-- Half HBC -->
+          <path d="M340 235 Q365 215 388 235 Q378 262 360 270 Q340 262 340 235Z" fill="#ffb347" stroke="#e8872a" stroke-width="2.5"/>
+          <rect x="342" y="250" width="26" height="13" rx="4" fill="#27ae60"/>
+          <text x="330" y="235" font-size="11" fill="#e74c3c">HALF</text>
+          <!-- Brain flying to Antmucky -->
+          <ellipse cx="450" cy="95" rx="18" ry="14" fill="#9b59b6" stroke="#8e44ad" stroke-width="2"/>
+          <path d="M436 97 Q443 90 450 97 Q457 90 464 97" fill="none" stroke="#7d3c98" stroke-width="2"/>
+          <path d="M465 100 Q510 128 535 148" fill="none" stroke="#9b59b6" stroke-width="2.5" stroke-dasharray="5,4"/>
+          <circle cx="545" cy="155" r="17" fill="#fde3a7" stroke="#d4a85a" stroke-width="2"/>
+          <text x="545" y="145" text-anchor="middle" font-size="11">⚡</text>
+          <text x="545" y="170" text-anchor="middle" font-size="7" fill="#8e44ad" font-weight="bold">SMART</text>
+          <!-- wedding couple being pooped on -->
+          <text x="580" y="210" text-anchor="middle" font-size="22">💒</text>
+          <text x="580" y="198" text-anchor="middle" font-size="11">💩</text>
+          <text x="350" y="272" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#aae" font-style="italic">Half the Earth gone. One brain later, Antmucky ruined a wedding.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>They laid the great tape right across the Earth's crack,</span>
+          <span>smoothing it carefully, front side and back.</span>
+          <span>But then came a ticking — a tick and a tock —</span>
+          <span>a countdown, a beeping, a very bad clock.</span>
+        </div>
+        <p>The tape was a bomb. Ten seconds after it was applied, it exploded. Half of the Earth disappeared. The Hairless Butt Cheek had been working on the tape at the time. Now he was half a butt. A full butt has sixty brains. Half a butt has only thirty. One loose brain flew off into the atmosphere.</p>
+        <div class="verse">
+          <span>The brain landed square in Antmucky's big head!</span>
+          <span>He was smart! He was clever! But something wrong said:</span>
+          <span>"I AM the Hairless Butt Cheek!" — and so he began</span>
+          <span>to poop upon everyone. That was his plan.</span>
+        </div>
+        <p>He pooped on the heads of a bride and groom at a wedding. They called 911. Antmucky Fat Soup went to jail.</p>
+      </div>
+    </div>
+
+    <!-- CH 13 -->
+    <div class="page" id="p13">
+      <div class="ch-head">
+        <div class="ch-num">Chapter Thirteen</div>
+        <div class="ch-title">In the Jail Cell</div>
+      </div>
+      <div class="illo-wrap">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="700" height="280" fill="#1a0e04"/>
+          <!-- Jail left -->
+          <rect x="0" y="0" width="175" height="280" fill="#111"/>
+          <line x1="28" y1="0" x2="28" y2="280" stroke="#555" stroke-width="8"/>
+          <line x1="56" y1="0" x2="56" y2="280" stroke="#555" stroke-width="8"/>
+          <line x1="84" y1="0" x2="84" y2="280" stroke="#555" stroke-width="8"/>
+          <line x1="112" y1="0" x2="112" y2="280" stroke="#555" stroke-width="8"/>
+          <line x1="140" y1="0" x2="140" y2="280" stroke="#555" stroke-width="8"/>
+          <line x1="0" y1="93" x2="175" y2="93" stroke="#666" stroke-width="5"/>
+          <line x1="0" y1="186" x2="175" y2="186" stroke="#666" stroke-width="5"/>
+          <!-- Antmucky on extinguisher -->
+          <ellipse cx="88" cy="218" rx="18" ry="33" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+          <rect x="80" y="184" width="16" height="22" rx="4" fill="#c0392b"/>
+          <text x="88" y="199" text-anchor="middle" font-size="12">🧯</text>
+          <circle cx="88" cy="169" r="16" fill="#fde3a7" stroke="#d4a85a" stroke-width="2"/>
+          <circle cx="83" cy="165" r="3" fill="#333"/>
+          <circle cx="93" cy="165" r="3" fill="#333"/>
+          <path d="M82 175 Q88 180 94 175" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+          <!-- Blast path -->
+          <path d="M88 160 Q200 100 340 70" fill="none" stroke="#f39c12" stroke-width="4" stroke-dasharray="8,5"/>
+          <text x="165" y="148" text-anchor="middle" font-size="18">💥</text>
+          <!-- California forest -->
+          <rect x="270" y="140" width="180" height="140" fill="#2d5a1e"/>
+          <ellipse cx="310" cy="195" rx="20" ry="34" fill="#1a5a0a"/>
+          <text x="310" y="180" text-anchor="middle" font-size="16">🔥</text>
+          <ellipse cx="350" cy="200" rx="18" ry="30" fill="#1a5a0a"/>
+          <text x="350" y="187" text-anchor="middle" font-size="13">🔥</text>
+          <ellipse cx="388" cy="192" rx="20" ry="32" fill="#1a5a0a"/>
+          <text x="388" y="179" text-anchor="middle" font-size="15">🔥</text>
+          <!-- Foam putting out fires -->
+          <path d="M438 175 Q408 160 386 172" fill="none" stroke="#3498db" stroke-width="7" stroke-linecap="round"/>
+          <ellipse cx="366" cy="170" rx="28" ry="10" fill="#3498db" opacity=".6"/>
+          <!-- Statue -->
+          <rect x="510" y="158" width="52" height="92" fill="#95a5a6" stroke="#7f8c8d" stroke-width="3" rx="4"/>
+          <ellipse cx="525" cy="183" rx="16" ry="18" fill="#7f8c8d" stroke="#6d6d6d" stroke-width="2"/>
+          <ellipse cx="545" cy="183" rx="16" ry="18" fill="#7f8c8d" stroke="#6d6d6d" stroke-width="2"/>
+          <rect x="518" y="195" width="26" height="10" rx="3" fill="#27ae60"/>
+          <text x="536" y="152" text-anchor="middle" font-size="24">👑</text>
+          <text x="484" y="248" font-size="13">🎊</text>
+          <text x="570" y="250" font-size="13">🎊</text>
+          <text x="600" y="248" font-size="13">🎊</text>
+          <text x="350" y="272" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#ffd700" font-style="italic">From jail cell to President. Bad choices immediately followed.</text>
+        </svg>
+      </div>
+      <div class="story-body">
+        <div class="verse">
+          <span>He sat in the jail cell and thought and he planned,</span>
+          <span>till he spotted a fire extinguisher at hand.</span>
+          <span>"I'll sit on the handle! I'll BLAST through the bars!"</span>
+          <span>He squeezed — and shot upward — past buildings and cars!</span>
+        </div>
+        <p>He flew all the way to California, where a huge forest fire was blazing. The extinguisher, still spraying, put out every last flame. The trees were saved. The animals cheered. A bear waved a tiny flag.</p>
+        <div class="verse">
+          <span>Then out of a boulder he carved with great care</span>
+          <span>a statue of Butt Cheek — majestic and rare!</span>
+          <span>The people all gathered and stared in delight:</span>
+          <span>"This hero is ours! What a glorious sight!"</span>
+        </div>
+        <p>Antmucky Fat Soup became the <strong>President of Butt Cheek World</strong>. He wore the crown. He sat in the big chair. He looked very important.</p>
+        <p>He immediately started making really bad choices.</p>
+        <div class="verse">
+          <span>And so ends our tale — of the Butt, and the Mark,</span>
+          <span>of sharks and of ghosts and of things in the dark,</span>
+          <span>of bacon that rained and of tape that went BOOM —</span>
+          <span>and a President ruling from his Butt Cheek room.</span>
+        </div>
+        <div class="fun-fact"><span class="fun-fact-star">👑</span><span><strong>THE END.</strong> Antmucky Fat Soup is now President of Butt Cheek World and making really bad choices. The story may not truly be over.</span></div>
+      </div>
+    </div>
+
+  </div><!-- end page-area -->
+
+  <div id="swipe-hint">&#8592; swipe to turn pages &#8594;</div>
+  <div id="foot">
+    <button class="pg-btn" id="prev-btn" onclick="goPrev()" disabled>&#8592; Prev</button>
+    <span id="page-counter">Cover</span>
+    <button class="pg-btn" id="next-btn" onclick="goNext()">Next &#8594;</button>
+  </div>
+</div>
+
+<script>
+var current = 0;
+var total = 13;
+
+function goTo(n) {
+  var pages = document.querySelectorAll('.page');
+  pages[current].classList.remove('active');
+  pages[current].scrollTop = 0;
+  current = n;
+  pages[current].classList.add('active');
+  pages[current].scrollTop = 0;
+  var btns = document.querySelectorAll('.nav-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  document.getElementById('nb-' + n).classList.add('active');
+  var activeBtn = document.getElementById('nb-' + n);
+  if (activeBtn) activeBtn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  document.getElementById('prev-btn').disabled = (n === 0);
+  document.getElementById('next-btn').disabled = (n === total);
+  document.getElementById('page-counter').textContent = n === 0 ? 'Cover' : 'Chapter ' + n + ' of ' + total;
+}
+
+function goPrev() { if (current > 0) goTo(current - 1); }
+function goNext() { if (current < total) goTo(current + 1); }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') goNext();
+  if (e.key === 'ArrowLeft') goPrev();
+});
+
+
+// ── TOUCH SWIPE TO TURN PAGES ──
+(function() {
+  var startX = 0, startY = 0, startT = 0;
+
+  // Make buttons bigger tap targets on touch devices
+  var hasTouchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (hasTouchScreen) {
+    // Remove swipe hint after first interaction
+    document.addEventListener('touchstart', function removeSeen() {
+      var hint = document.getElementById('swipe-hint');
+      if (hint) hint.style.opacity = '0';
+      document.removeEventListener('touchstart', removeSeen);
+    }, {passive: true});
+  } else {
+    var hint = document.getElementById('swipe-hint');
+    if (hint) hint.style.display = 'none';
+  }
+
+  var pageArea = document.getElementById('page-area');
+
+  pageArea.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startT = Date.now();
+  }, {passive: true});
+
+  pageArea.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    var dt = Date.now() - startT;
+
+    // Only register as swipe if: fast enough, horizontal enough, and long enough
+    if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) goNext();   // swipe left = next page
+      else         goPrev();  // swipe right = prev page
+    }
+  }, {passive: true});
+
+  // Also make cover "Read Chapter 1" button bigger on touch
+  if (hasTouchScreen) {
+    var startBtn = document.querySelector('.cover-start');
+    if (startBtn) {
+      startBtn.style.padding = '16px 44px';
+      startBtn.style.fontSize = '20px';
+    }
+  }
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Adventures of the Hairless Butt Cheek</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a1a}
+#launcher{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;background:radial-gradient(ellipse at center,#1a0a3a 0%,#040410 100%);z-index:10;padding:24px}
+#launcher h1{font-family:"Fredoka One",cursive;font-size:clamp(18px,4vw,32px);color:#ffd700;text-shadow:0 0 30px #ffd700;text-align:center;line-height:1.4}
+.big-emoji{font-size:clamp(3rem,8vw,5rem);animation:bob .9s infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.sub{font-family:"Press Start 2P",monospace;font-size:clamp(7px,1.5vw,10px);color:#a78bfa;letter-spacing:2px;text-align:center}
+.cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
+.card{flex:1;min-width:240px;max-width:280px;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.15);border-radius:20px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;text-decoration:none}
+.card:hover,.card:active{background:rgba(255,255,255,0.12);transform:scale(1.03);border-color:rgba(255,255,255,0.35)}
+.card-icon{font-size:3.5rem}
+.card-title{font-family:"Fredoka One",cursive;font-size:clamp(16px,3vw,22px);color:#fff;text-align:center;line-height:1.2}
+.card-desc{font-size:clamp(11px,1.8vw,13px);color:#aaa;text-align:center;line-height:1.6}
+.card-btn{background:linear-gradient(135deg,#7B2FBE,#4A90D9);border:none;border-radius:30px;padding:10px 24px;font-family:"Fredoka One",cursive;font-size:clamp(13px,2vw,16px);color:#fff;cursor:pointer;width:100%;transition:opacity 0.15s}
+.card:nth-child(2) .card-btn{background:linear-gradient(135deg,#27ae60,#2980b9)}
+#frame-wrap{position:fixed;inset:0;z-index:20;display:none;flex-direction:column}
+#back-bar{flex-shrink:0;background:rgba(0,0,0,0.9);padding:8px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #333}
+#back-btn{font-family:"Fredoka One",cursive;font-size:15px;color:#ffd700;background:none;border:1px solid #ffd700;border-radius:20px;padding:6px 16px;cursor:pointer}
+#back-title{font-family:"Fredoka One",cursive;font-size:14px;color:#fff}
+iframe{flex:1;width:100%;border:none;display:block}
+</style>
+</head>
+<body>
+<div id="launcher">
+  <div class="big-emoji">&#x1F351;</div>
+  <h1>The Adventures of the<br>Hairless Butt Cheek</h1>
+  <div class="sub">&#x2756; CHOOSE YOUR ADVENTURE &#x2756;</div>
+  <div class="cards">
+    <div class="card" onclick="open('game.html','_blank')">
+      <div class="card-icon">&#x1F3AE;</div>
+      <div class="card-title">The RPG Game</div>
+      <div class="card-desc">13 levels following every chapter of the story. Fight dinosaurs, sharks, giraffe underwear thieves and become President!</div>
+      <button class="card-btn">PLAY GAME &#x25B6;</button>
+    </div>
+    <div class="card" onclick="open('book.html','_blank')">
+      <div class="card-icon">&#x1F4DA;</div>
+      <div class="card-title">The Storybook</div>
+      <div class="card-desc">13 illustrated chapters in Dr. Seuss style with hand-drawn scenes. Swipe to turn pages!</div>
+      <button class="card-btn">READ BOOK &#x25B6;</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

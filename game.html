@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hairless Butt Cheek RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+#c{display:block;width:100vw;height:100vh;image-rendering:pixelated}
+#ui{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+
+/* HUD */
+#hud{position:absolute;top:0;left:0;right:0;padding:10px 16px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent);pointer-events:none}
+#hud-l{display:flex;flex-direction:column;gap:3px}
+.h-num{font-family:"Press Start 2P",monospace;font-size:9px;color:#ffd700;text-shadow:0 0 10px #ffd700}
+.h-name{font-family:"Press Start 2P",monospace;font-size:6px;color:#bbb;max-width:300px;line-height:1.8}
+#hud-r{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+.bar{display:flex;align-items:center;gap:6px}
+.bl{font-family:"Press Start 2P",monospace;font-size:7px;color:#aaa}
+.bg{width:110px;height:9px;background:#222;border-radius:5px;overflow:hidden;border:1px solid #444}
+.bf{height:100%;border-radius:5px;transition:width .2s}
+#hpf{background:linear-gradient(90deg,#e74c3c,#ff7675)}
+#ppf{background:linear-gradient(90deg,#6d4c41,#bcaaa4)}
+.bv{font-family:"Press Start 2P",monospace;font-size:7px;color:#fff;min-width:26px}
+
+/* Notify */
+#notif{position:absolute;top:64px;left:50%;transform:translateX(-50%);font-family:"Press Start 2P",monospace;font-size:8px;color:#fff;background:rgba(0,0,0,.85);border:2px solid #7B2FBE;border-radius:8px;padding:9px 18px;opacity:0;transition:opacity .3s;text-align:center;max-width:92vw;line-height:2;pointer-events:none}
+#notif.on{opacity:1}
+
+/* Dialogue */
+#dlg{position:absolute;bottom:56px;left:50%;transform:translateX(-50%);width:min(680px,95vw);background:rgba(4,4,18,.97);border:3px solid #7B2FBE;border-radius:14px;padding:18px 22px;display:none;box-shadow:0 0 32px rgba(123,47,190,.7)}
+.ds{font-family:"Press Start 2P",monospace;font-size:9px;color:#ffd700;margin-bottom:10px}
+.dp{font-size:2.2rem;float:left;margin:0 12px 4px 0;line-height:1}
+.db{font-size:14px;line-height:1.85;color:#ddd;margin-bottom:13px;min-height:36px;clear:none}
+.da{display:flex;flex-wrap:wrap;gap:8px;clear:both;pointer-events:all}
+.dbn{background:#7B2FBE;border:none;border-radius:8px;padding:9px 18px;font-family:"Press Start 2P",monospace;font-size:7px;color:#fff;cursor:pointer}
+.dbn:hover{background:#9d45e8}
+.dbs{background:#2a2a3a;border:1px solid #555;border-radius:8px;padding:9px 18px;font-family:"Press Start 2P",monospace;font-size:7px;color:#ccc;cursor:pointer}
+.dbs:hover{background:#3a3a4a}
+
+/* Controls hint */
+#ctrl{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-family:"Press Start 2P",monospace;font-size:6px;color:#555;display:flex;gap:14px;background:rgba(0,0,0,.55);padding:5px 14px;border-radius:6px}
+
+/* Level complete */
+#lc{position:absolute;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;pointer-events:all}
+#lc h2{font-family:"Press Start 2P",monospace;font-size:clamp(12px,3vw,22px);color:#ffd700;text-shadow:0 0 24px #ffd700;text-align:center;line-height:1.8}
+#lc p{font-family:"Nunito",sans-serif;font-size:15px;color:#ccc;text-align:center;max-width:480px;line-height:1.8}
+#lcb{background:linear-gradient(135deg,#7B2FBE,#4A90D9);border:none;border-radius:12px;padding:14px 34px;font-family:"Press Start 2P",monospace;font-size:10px;color:#fff;cursor:pointer}
+#lcb:hover{transform:scale(1.04)}
+
+/* Title */
+#title{position:absolute;inset:0;background:radial-gradient(ellipse at center,#150a2e 0%,#040410 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:all;z-index:20}
+#title h1{font-family:"Press Start 2P",monospace;font-size:clamp(10px,2.6vw,20px);color:#ffd700;text-shadow:0 0 40px #ffd700;text-align:center;line-height:2}
+.tsub{font-family:"Press Start 2P",monospace;font-size:8px;color:#a78bfa;letter-spacing:3px}
+.tbig{font-size:4.5rem;animation:bob .9s infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+#sbtn{background:linear-gradient(135deg,#7B2FBE,#4A90D9);border:none;border-radius:14px;padding:16px 44px;font-family:"Press Start 2P",monospace;font-size:11px;color:#fff;cursor:pointer;box-shadow:0 0 30px rgba(123,47,190,.7)}
+.tctr{font-family:"Press Start 2P",monospace;font-size:6px;color:#555;text-align:center;line-height:2.4}
+
+/* Audio */
+#audio{position:absolute;bottom:42px;right:12px;background:rgba(4,4,18,.92);border:1px solid #333;border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;pointer-events:all}
+.ar{display:flex;align-items:center;gap:7px}
+.ai{font-size:13px;cursor:pointer;width:18px;text-align:center}
+.al{font-family:"Press Start 2P",monospace;font-size:6px;color:#888;width:26px}
+.asl{-webkit-appearance:none;width:76px;height:4px;background:#333;border-radius:2px;outline:none;cursor:pointer}
+.asl::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#7B2FBE;cursor:pointer}
+
+/* ── TOUCH CONTROLS ── */
+#touch-ui {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 10px 14px 14px;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
+}
+/* D-PAD */
+#dpad {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  pointer-events: all;
+  flex-shrink: 0;
+}
+.dp-btn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background 0.1s;
+  touch-action: none;
+}
+.dp-btn:active, .dp-btn.pressed { background: rgba(255,255,255,0.38); }
+#dp-up    { top: 0;    left: 50px; }
+#dp-down  { bottom: 0; left: 50px; }
+#dp-left  { top: 50px; left: 0;    }
+#dp-right { top: 50px; right: 0;   }
+#dp-ctr   { top: 50px; left: 50px; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+
+/* ACTION BUTTONS */
+#action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: all;
+  align-items: flex-end;
+}
+.act-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: none;
+  font-family: "Press Start 2P", monospace;
+  transition: transform 0.1s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+.act-btn:active { transform: scale(0.9); }
+.act-btn span {
+  font-size: 7px;
+  color: #fff;
+  margin-top: 2px;
+  line-height: 1;
+  font-family: "Press Start 2P", monospace;
+}
+#btn-interact { background: #27ae60; border-color: #2ecc71; }
+#btn-poop     { background: #7B2FBE; border-color: #9b59b6; }
+#btn-fart     { background: #c0392b; border-color: #e74c3c; }
+
+/* Side-by-side on wider screens */
+#action-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+/* Make audio panel higher so it doesn't clash */
+#audio { bottom: 175px !important; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="hud">
+    <div id="hud-l">
+      <div class="h-num" id="hnum">LEVEL 1</div>
+      <div class="h-name" id="hname">THE LEGEND</div>
+    </div>
+    <div id="hud-r">
+      <div class="bar"><span class="bl">HP</span><div class="bg"><div class="bf" id="hpf" style="width:100%"></div></div><span class="bv" id="hpv">100</span></div>
+      <div class="bar"><span class="bl">POOP</span><div class="bg"><div class="bf" id="ppf" style="width:100%"></div></div><span class="bv" id="ppv">5</span></div>
+    </div>
+  </div>
+  <div id="notif"></div>
+  <div id="dlg">
+    <div class="ds" id="ds">???</div>
+    <span class="dp" id="dp"></span>
+    <div class="db" id="db"></div>
+    <div class="da" id="da"></div>
+  </div>
+  <div id="ctrl" style="display:none"></div>
+  <div id="lc">
+    <h2 id="lct">LEVEL COMPLETE!</h2>
+    <p id="lcs"></p>
+    <button id="lcb" onclick="nextLvl()">NEXT LEVEL</button>
+  </div>
+  <div id="title">
+    <div class="tbig">🍑</div>
+    <h1>THE ADVENTURES OF<br>THE HAIRLESS<br>BUTT CHEEK</h1>
+    <div class="tsub">AN EPIC RPG</div>
+    <button id="sbtn" onclick="startGame()">PLAY GAME</button>
+    <div class="tctr">WASD / ARROWS = Move | E / SPACE = Interact<br>P = Poop Attack | F = Fart Cloud</div>
+  </div>
+  <div id="audio">
+    <div class="ar"><span class="ai" id="mi" onclick="togM()">🎵</span><span class="al">MUS</span><input class="asl" id="msl" type="range" min="0" max="100" value="18" oninput="setM(this.value)"></div>
+    <div class="ar"><span class="ai" id="si" onclick="togS()">🔊</span><span class="al">SFX</span><input class="asl" id="ssl" type="range" min="0" max="100" value="65" oninput="setS(this.value)"></div>
+  </div>
+
+  <!-- TOUCH CONTROLS -->
+  <div id="touch-ui">
+    <div id="dpad">
+      <div class="dp-btn" id="dp-up">&#8679;</div>
+      <div class="dp-btn" id="dp-left">&#8678;</div>
+      <div class="dp-btn" id="dp-ctr"></div>
+      <div class="dp-btn" id="dp-right">&#8680;</div>
+      <div class="dp-btn" id="dp-down">&#8681;</div>
+    </div>
+    <div id="action-row">
+      <div class="act-btn" id="btn-interact">&#x1F4AC;<span>TALK</span></div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="act-btn" id="btn-poop">&#x1F4A9;<span>POOP</span></div>
+        <div class="act-btn" id="btn-fart">&#x1F4A8;<span>FART</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+"use strict";
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, TILE;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── STATE ──
+let started = false, curLvl = 0, dlgOpen = false, lvlDone = false;
+let player;
+let ents = [], projs = [], parts = [], cam = {x:0,y:0};
+let keys = {}, pCD = 0, fCD = 0, stepT = 0, nTimer = null;
+let raf;
+
+// ── INPUT ──
+document.addEventListener('keydown', function(e) {
+  keys[e.code] = true;
+  if (['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].indexOf(e.code) >= 0) e.preventDefault();
+  if (e.code === 'Space' || e.code === 'KeyE') doInteract();
+  if (e.code === 'KeyP') doPoopAtk();
+  if (e.code === 'KeyF') doFartAtk();
+});
+document.addEventListener('keyup', function(e) { keys[e.code] = false; });
+
+// ── LEVELS ──
+var LEVELS = [];
+(function buildLevels() {
+
+LEVELS.push({
+  id: 1,
+  name: "THE LEGEND OF THE HAIRLESS BUTT CHEEK",
+  bpm: 148, mel: [523,659,784,1047,784,659,523,587],
+  bass: [131,0,196,0,220,0,175,0],
+  bgTop: '#2d5a1e', bgBot: '#1a3d10',
+  pStart: {x:2, y:8}, ammo: 5,
+  intro: [
+    {spk:"NARRATOR", ico:"📖", txt:"You are the Hairless Butt Cheek — wearing green underwear. Your powers: POOP (P) kills enemies in front, FART (F) kills enemies nearby. You have limited ammo!"},
+    {spk:"DINOSAUR", ico:"🦕", txt:"ROARRR! I just chomped off one of your butt cheeks! Haha! You'll never get it back!"},
+    {spk:"NARRATOR", ico:"📖", txt:"Find the GLUE POT to reattach your cheek. Defeat the dinosaurs with poop attacks. Collect your BUTT CHEEK to win this level!"}
+  ],
+  map: [
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+    "T............................T",
+    "T....t.........t.............T",
+    "T.....t..t....t.t............T",
+    "T.........t..................T",
+    "T....t.........t.t...........T",
+    "T.........................t..T",
+    "T............................T",
+    "T............................T",
+    "T.........t......t...........T",
+    "T...t.................t......T",
+    "T............................T",
+    "T............................T",
+    "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  ents: [
+    {t:'enemy', x:14,y:5, hp:3,mhp:3, id:'d1', em:'🦕', patrol:true, spd:1.2},
+    {t:'enemy', x:22,y:8, hp:3,mhp:3, id:'d2', em:'🦕', patrol:true, spd:1.0},
+    {t:'enemy', x:25,y:11,hp:3,mhp:3, id:'d3', em:'🦕', patrol:true, spd:1.4},
+    {t:'item',  x:8, y:8, id:'glue', em:'🪣',
+     msg:"A pot of super glue! Use this to reattach your cheek.",
+     act:function(e){e.alive=false;player.hasGlue=true;notify("GLUE ACQUIRED! Now defeat the dinosaurs and collect your butt cheek!");sfxC();}},
+    {t:'pick',  x:26,y:7, id:'bc1', em:'🍑', msg:"Your missing butt cheek!"},
+    {t:'sign',  x:5, y:8, id:'s1', em:'⚠️',
+     msg:"DANGER: Dinosaur territory ahead! Grab the GLUE POT then fight back with P (poop attack) or F (fart cloud)!"},
+    {t:'exit',  x:27,y:8, id:'ex1', em:'🌀', on:false}
+  ],
+  win: 'bc1',
+  winTitle: "BUTT CHEEK RESTORED!",
+  winStory: "You pooped on the dinosaur and retrieved your butt cheek — glued it right back on. But it might fall off in water..."
+});
+
+LEVELS.push({
+  id: 2,
+  name: "THE MARK",
+  bpm: 108, mel: [440,523,659,587,523,440,392,349],
+  bass: [110,0,165,0,175,0,165,0],
+  bgTop: '#1a5276', bgBot: '#0d3b5e',
+  pStart: {x:2, y:9}, ammo: 3,
+  intro: [
+    {spk:"NARRATOR", ico:"📖", txt:"One week later. The Hairless Butt Cheek went swimming. The dinosaur butt cheek was held on with tape."},
+    {spk:"SHARK", ico:"🦈", txt:"*CHOMP* Mmm, tape! Delicious! I ate the tape right off your butt cheek! SPLASH!"},
+    {spk:"NARRATOR", ico:"📖", txt:"The cheek stayed on but left a MARK. HBC feared other Hairless Butt Cheeks would mock him. He went to the Doctor! Watch out for sharks in the water!"}
+  ],
+  map: [
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~S",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "S..............................S",
+    "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+  ],
+  ents: [
+    {t:'enemy', x:10,y:3, hp:2,mhp:2, id:'sh1', em:'🦈', patrol:true, spd:2.2},
+    {t:'enemy', x:19,y:5, hp:2,mhp:2, id:'sh2', em:'🦈', patrol:true, spd:1.8},
+    {t:'enemy', x:14,y:2, hp:2,mhp:2, id:'sh3', em:'🦈', patrol:true, spd:2.5},
+    {t:'sign',  x:4, y:9, id:'sg2', em:'🏖️',
+     msg:"The beach. Doctor Fatzmann is to the right. Swim carefully - sharks are above! Poop on them to fight back."},
+    {t:'npc',   x:22,y:10, id:'doc', em:'🧑‍⚕️',
+     msg:"Dr. Fatzmann: I will fix that mark with my special Fat Spray! It will cover the mark perfectly. Stand still!",
+     act:function(e,done){
+       showDlg("DR. FATZMANN","🧑‍⚕️","I will apply the Fat Spray to cover that ugly mark. This never goes wrong. Probably.",[
+         {l:"Apply the Fat Spray!",a:function(){
+           sfxBoom(); notify("FAT SPRAY APPLIED... GROWING... TOO FAT... BOOM! 15 babies burst out!");
+           setTimeout(function(){player.collected['babies']=true;done();},1400);
+         }},
+         {l:"Maybe later...",a:function(){notify("The mark stays. The doctor will wait for you.");}}
+       ]);
+     }},
+    {t:'pick',  x:24,y:10, id:'babies', em:'✨', msg:"The explosion! 15 baby Hairless Butt Cheeks burst out!"},
+    {t:'exit',  x:26,y:10, id:'ex2', em:'🌀', on:false},
+    {t:'sign',  x:12,y:9, id:'sg2b', em:'📋',
+     msg:"Swim left through the water or walk along the beach to reach Dr. Fatzmann on the right side."}
+  ],
+  win: 'babies',
+  winTitle: "BABIES BORN! BOOM!",
+  winStory: "The Fat Spray grew too big and HBC exploded. 15 baby Hairless Butt Cheeks were born from the explosion. They head to the prairie..."
+});
+
+LEVELS.push({
+  id: 3,
+  name: "THE HAIRLESS BUTT CHEEK BABIES",
+  bpm: 165, mel: [392,392,440,494,523,494,440,392],
+  bass: [196,0,262,0,294,0,196,0],
+  bgTop: '#c8960c', bgBot: '#8b6914',
+  pStart: {x:2, y:7}, ammo: 10,
+  intro: [
+    {spk:"NARRATOR", ico:"📖", txt:"15 babies emerged from the explosion. But one had a mark. Another baby farted on the marked one. She died. 14 babies remain!"},
+    {spk:"BABY", ico:"🍑", txt:"Waahh! We are on the PRAIRIE! We are tiny and there are big animals!"},
+    {spk:"NARRATOR", ico:"📖", txt:"A CHEETAH is chasing a GAZELLE! Hit the GAZELLE with a poop attack (P) to stop the chase. Then the Cheetah becomes your BFF forever!"}
+  ],
+  map: [
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "G............................G",
+    "G...g..g.....................G",
+    "G.g....g.g.g.................G",
+    "G....g.......................G",
+    "G..g..g..g..g................G",
+    "G............................G",
+    "G............................G",
+    "G...g.g......................G",
+    "G.g...g.g....................G",
+    "G....g.......................G",
+    "G............................G",
+    "G............................G",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+  ],
+  ents: [
+    {t:'enemy', x:8, y:7, hp:5,mhp:5, id:'cheetah', em:'🐆', patrol:true, spd:2.8},
+    {t:'enemy', x:15,y:7, hp:2,mhp:2, id:'gazelle', em:'🦌', patrol:true, spd:2.0},
+    {t:'sign',  x:4, y:3, id:'sg3', em:'📜',
+     msg:"Hit the GAZELLE with a poop attack (P key) to stop the Cheetah chase. Then the Cheetah is your BFF! FUN FACT: All Hairless Butt Cheeks wear underwear."},
+    {t:'item',  x:5, y:4, id:'db1', em:'💀',
+     msg:"One baby had a mark. Another farted on her and she died. RIP marked baby.",
+     act:function(e){e.alive=false;notify("RIP marked baby. 14 babies remain.");sfxI();}},
+    {t:'pick',  x:24,y:7, id:'bff', em:'🐆', msg:"The Cheetah bows! We are BFFs forever! 14 babies + 1 cheetah = unstoppable team!"},
+    {t:'exit',  x:26,y:7, id:'ex3', em:'🌀', on:false}
+  ],
+  win: 'bff',
+  winTitle: "BFF CHEETAH UNLOCKED!",
+  winStory: "Poop stopped the gazelle. The Cheetah was amazed and became BFF. Then the team fell into a deep hole, a Lion ate everyone, and the ghost of HBC went looking for revenge..."
+});
+
+LEVELS.push({
+  id: 4,
+  name: "THE GHOST",
+  bpm: 92, mel: [440,0,392,0,349,0,330,294],
+  bass: [110,0,0,0,175,0,0,0],
+  bgTop: '#1a0a2e', bgBot: '#0d0520',
+  pStart: {x:2, y:7}, ammo: 6,
+  intro: [
+    {spk:"NARRATOR", ico:"📖", txt:"Nobody knew the original Hairless Butt Cheek left an evil ghost behind!"},
+    {spk:"GHOST", ico:"👻", txt:"MWAHAHAHA! The babies fell in a hole. The Cheetah tried to dig them out. A LION ate ALL of them. I shall have REVENGE!"},
+    {spk:"NARRATOR", ico:"📖", txt:"The ghost went to the Witch Doctor for revenge spells. But the doctor's Nice Spray and Hairless Butt Cheek Spray accidentally hit the ghost -- turning it GOOD again with GREEN UNDERWEAR! Now go to the zoo and deal with a giraffe stealing your underwear!"}
+  ],
+  map: [
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+    "P............................P",
+    "P....p.p.....................P",
+    "P.p.....p.p..................P",
+    "P....p.......................P",
+    "P..p..p......................P",
+    "P............................P",
+    "P............................P",
+    "P...p.p......................P",
+    "P.p...p.p....................P",
+    "P....p.......................P",
+    "P............................P",
+    "P............................P",
+    "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
+  ],
+  ents: [
+    {t:'enemy', x:9, y:7, hp:4,mhp:4, id:'lion', em:'🦁', patrol:true, spd:1.5},
+    {t:'sign',  x:5, y:3, id:'sg4', em:'🕳️',
+     msg:"The deep hole. The babies fell in. The Cheetah dug a path out. A lion was at the top and ate everyone. Evil ghost time!"},
+    {t:'npc',   x:16,y:7, id:'wd', em:'🧙',
+     msg:"WITCH DOCTOR: I was testing Nice Spray and Hairless Butt Cheek Spray! A patient kept fanning them away and they hit the evil ghost! Now he is GOOD, mark-free, GREEN UNDERWEAR! Science!"},
+    {t:'npc',   x:22,y:6, id:'giraffe', em:'🦒',
+     msg:"GIRAFFE: *YANK* Your green underwear looks like a LEAF! Nom nom nom!",
+     act:function(e,done){
+       showDlg("GIRAFFE","🦒","*YANK YANK* Your green underwear! It thinks it is a tasty leaf and is pulling it RIGHT OFF!",[
+         {l:"POOP IN ITS MOUTH!",a:function(){
+           sfxP(); sfxBoom(); e.alive=false; e.hp=0;
+           spawnParts(e.px,e.py,'#8B4513',20);
+           notify("POOP IN THE GIRAFFE'S MOUTH! The giraffe died! Underwear retrieved!");
+           player.collected['undies']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick',  x:24,y:7, id:'undies', em:'🩲', msg:"Your green underwear! Safe and sound."},
+    {t:'exit',  x:26,y:7, id:'ex4', em:'🌀', on:false}
+  ],
+  win: 'undies',
+  winTitle: "GREEN UNDERWEAR SAVED!",
+  winStory: "You pooped in the giraffe mouth. Giraffe died. Underwear retrieved. Now fully restored and wanting a car."
+});
+
+LEVELS.push({
+  id: 5,
+  name: "THE CAR",
+  bpm: 135, mel: [523,659,784,659,587,698,880,698],
+  bass: [131,0,175,0,196,0,131,0],
+  bgTop: '#1c1c2e', bgBot: '#0f0f1a',
+  pStart: {x:2, y:7}, ammo: 4,
+  intro: [
+    {spk:"HBC", ico:"🍑", txt:"I want a car. I bought one that night. But I was SO SCARED to drive it..."},
+    {spk:"NARRATOR", ico:"📖", txt:"He tried once. He was so scared he pooped in his pants and the car shut down. He went to the manager to complain."},
+    {spk:"MANAGER", ico:"😤", txt:"Our cars are NOT bad quality! You cannot talk back to me! Get out of my dealership!"}
+  ],
+  map: [
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    "B............................B",
+    "B...b..b.....................B",
+    "B....b..b....................B",
+    "B............................B",
+    "B............................B",
+    "B............................B",
+    "B............................B",
+    "B....~~~~~~~.................B",
+    "B....~~~~~~~.................B",
+    "B....~~~~~~~.................B",
+    "B............................B",
+    "B............................B",
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  ents: [
+    {t:'item', x:7, y:7, id:'mycar', em:'🚗',
+     msg:"YOUR CAR. You got in once, pooped yourself, and it stalled. Not great.",
+     act:function(e){
+       showDlg("YOUR CAR","🚗","You are TERRIFIED. You get in. Turn the key. IMMEDIATELY poop yourself. The car stalls. You need to complain to the manager.",[
+         {l:"Go argue with manager",a:function(){notify("Walking to the manager to complain...");}},
+         {l:"Try driving again",a:function(){sfxF();notify("You poop yourself again. Car still broken. Go see the manager.");}}
+       ]);
+     }},
+    {t:'npc', x:17,y:7, id:'mgr', em:'😤',
+     msg:"MANAGER: Our cars are EXCELLENT! You cannot return this! The problem is YOU not the car!",
+     act:function(e,done){
+       showDlg("MANAGER","😤","Our cars are the BEST quality! You CANNOT talk back to ME! Get out of my dealership right now sir!",[
+         {l:"POOP IN HIS BUTT HOLE!",a:function(){
+           sfxP(); sfxBoom(); e.alive=false; e.hp=0;
+           spawnParts(e.px,e.py,'#8B4513',18);
+           notify("MANAGER DEFEATED! Now steal his car!");
+           player.killed['mgr']=true; done();
+         }},
+         {l:"Fine, I will leave...",a:function(){notify("Manager smirks. You need to fight back!");}}
+       ]);
+     }},
+    {t:'item', x:22,y:7, id:'mgrcar', em:'🚘',
+     msg:"The manager's car. Yours now (if you dealt with him).",
+     act:function(e,done){
+       if(!player.killed['mgr']){showDlg("MANAGER'S CAR","🚘","Deal with the manager first!",[]);return;}
+       showDlg("STOLEN CAR","🚘","You steal the manager's luxury car. Now where to live? The ocean looks nice and rent-free.",[
+         {l:"DRIVE INTO THE OCEAN!",a:function(){
+           sfxSplash(); sfxC(); e.alive=false;
+           notify("SPLASH! The car sinks to the bottom. Your new underwater car home!");
+           player.collected['home']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:12,y:9, id:'home', em:'🏠', msg:"Your underwater car home! The ocean is your living room now."},
+    {t:'exit', x:27,y:7, id:'ex5', em:'🌀', on:false},
+    {t:'sign', x:4, y:4, id:'sg5', em:'📜',
+     msg:"PLAN: 1) Try your car and fail. 2) Argue with the manager. 3) Poop on him. 4) Steal his car. 5) Drive it into the ocean for your new home!"}
+  ],
+  win: 'home',
+  winTitle: "UNDERWATER CAR HOME!",
+  winStory: "The car sank to the ocean floor and became home. But it needs furniture. Also a pig named Piglwiglskunkl is having his own adventure..."
+});
+
+LEVELS.push({
+  id: 6,
+  name: "PIGLWIGLSKUNKL & CHARLIE THE TOILET",
+  bpm: 178, mel: [523,659,784,1047,784,659,523,0],
+  bass: [131,0,131,196,175,0,175,196],
+  bgTop: '#1a3a2a', bgBot: '#0f2218',
+  pStart: {x:2, y:7}, ammo: 5,
+  intro: [
+    {spk:"PIGLWIGLSKUNKL", ico:"🐷", txt:"I am Piglwiglskunkl, friend of the Hairless Butt Cheek! I found a WIG on the grass in the park."},
+    {spk:"PIGLWIGLSKUNKL", ico:"🐷", txt:"I put the wig on. A portal opened. I stepped inside and fell asleep. When I woke up I was INSIDE A TOILET BOWL."},
+    {spk:"NARRATOR", ico:"📖", txt:"The toilet was CHARLIE - his sworn enemy! Charlie has a pet owl EVIL EYE whose job is to peck Piglwiglskunkl. Find BENNY BEAR to eat the owl (it is Thanksgiving!). Then destroy Charlie!"}
+  ],
+  map: [
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "W............................W",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+  ],
+  ents: [
+    {t:'item', x:5, y:3, id:'wig', em:'💨',
+     msg:"THE WIG that opened the portal! Pick it up to enter Charlie's tiny toilet world.",
+     act:function(e){e.alive=false;sfxPortal();notify("WIG ON! Portal opened! You are now tiny -- inside Charlie the Toy Toilet world!");}},
+    {t:'enemy', x:8, y:7, hp:3,mhp:3, id:'charlie', em:'🚽', patrol:true, spd:1.1},
+    {t:'enemy', x:13,y:5, hp:1,mhp:1, id:'owl', em:'🦉', patrol:true, spd:2.5},
+    {t:'npc', x:19,y:10, id:'benny', em:'🐻',
+     msg:"BENNY BEAR: It is Thanksgiving and I am STARVING! Is that an OWL? Perfect. Want me to handle it?",
+     act:function(e,done){
+       showDlg("BENNY BEAR","🐻","It is Thanksgiving! I am hungry. That owl looks DELICIOUS. Want me to handle it?",[
+         {l:"EAT THE OWL BENNY!",a:function(){
+           for(var i=0;i<ents.length;i++){var x=ents[i];if(x.id==='owl'&&x.alive){x.alive=false;x.hp=0;spawnParts(x.px,x.py,'#ff6600',12);sfxBoom();}}
+           notify("BENNY ATE EVIL EYE! Charlie is exposed! Also Benny secretly put NERD GLASSES on Charlie...");
+           for(var i=0;i<ents.length;i++){var x=ents[i];if(x.id==='charlie'){x.hp=1;}}
+           done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:22,y:7, id:'party', em:'🎉', msg:"Charlie saw the nerd glasses and was SO ENRAGED he EXPLODED! Party time!"},
+    {t:'exit', x:24,y:7, id:'ex6', em:'🌀', on:false},
+    {t:'sign', x:3, y:6, id:'sg6', em:'📜',
+     msg:"1) Pick up the WIG. 2) Find BENNY BEAR to eat the owl. 3) Charlie gets nerd glasses and EXPLODES. 4) Collect the party icon!"}
+  ],
+  win: 'party',
+  winTitle: "CHARLIE EXPLODED!",
+  winStory: "Charlie saw the nerd glasses and exploded with rage. Piglwiglskunkl threw a party. But Benny left his underwear behind..."
+});
+
+LEVELS.push({
+  id: 7,
+  name: "THE PIGLESS UNDERWEAR & THE BEE",
+  bpm: 152, mel: [330,330,392,330,440,0,392,0],
+  bass: [165,0,165,0,220,0,220,0],
+  bgTop: '#2a2018', bgBot: '#1a1408',
+  pStart: {x:2, y:7}, ammo: 8,
+  intro: [
+    {spk:"PIGLWIGLSKUNKL", ico:"🐷", txt:"After the party everyone left. I found Benny's underwear on the floor! I put them on. I looked SO COOL."},
+    {spk:"PIGLWIGLSKUNKL", ico:"🐷", txt:"Then the underwear disappeared. Benny had it! I said hand it over. He said no. We fought!"},
+    {spk:"NARRATOR", ico:"📖", txt:"The Hairless Butt Cheek pooped on BOTH of them and they died. Then HBC bought a sheep named SHINSHONG SHEEP. Then someone put a BOMB on his car -- but a BEE flew in and saved him!"}
+  ],
+  map: [
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "H............................H",
+    "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
+  ],
+  ents: [
+    {t:'enemy', x:7, y:7, hp:2,mhp:2, id:'pig7', em:'🐷', patrol:false, spd:0},
+    {t:'enemy', x:10,y:7, hp:2,mhp:2, id:'ben7', em:'🐻', patrol:false, spd:0},
+    {t:'sign',  x:4, y:4, id:'sg7', em:'🩲',
+     msg:"Poop on BOTH Pig and Bear to settle the underwear dispute. Then buy a sheep at the pet store. Then approach the bomb car -- a bee will save you!"},
+    {t:'npc', x:16,y:7, id:'shop', em:'🏪',
+     msg:"PET STORE: We have SHINSHONG SHEEP! 100 percent bomb-proof. Your car is not.",
+     act:function(e,done){
+       if(!player.killed['pig7']||!player.killed['ben7']){showDlg("PET STORE","🏪","Settle the underwear dispute first!",[]);return;}
+       showDlg("PET STORE","🏪","Welcome! Our star product: SHINSHONG SHEEP! 100% bomb-proof (your car is not guaranteed).",[
+         {l:"Buy Shinshong Sheep!",a:function(){
+           sfxC(); notify("SHINSHONG SHEEP ACQUIRED! Now go to your car...");
+           player.hasSheep=true; e.alive=false; done();
+         }}
+       ]);
+     }},
+    {t:'item', x:22,y:7, id:'bcar', em:'💣',
+     msg:"YOUR CAR. There is a BOMB on it. You have not noticed yet.",
+     act:function(e,done){
+       if(!player.hasSheep){showDlg("BOMB CAR","💣","Buy a sheep from the pet store first!",[]);return;}
+       showDlg("BOMB CAR!","🐝","A BEE flew into the car! You stopped to shoo it away. The bee left. KABOOM! The car exploded but YOU are safe!",[
+         {l:"Shoo the bee first!",a:function(){
+           sfxBoom(); e.alive=false;
+           spawnParts(e.px,e.py,'#ff4400',30);
+           notify("KABOOM! Car exploded. But you are safe! The bee SAVED YOUR LIFE! Run back and thank it!");
+           player.collected['sheep7']=true; done();
+         }}
+       ]);
+     }},
+    {t:'npc', x:23,y:5, id:'bee7', em:'🐝',
+     msg:"BEE: Bzzz! I flew into your car to warn you about the bomb! Please do not swat me! You are welcome!"},
+    {t:'pick', x:25,y:7, id:'sheep7', em:'🐑', msg:"Shinshong Sheep is safe! You thank the bee. Best bee ever."},
+    {t:'exit', x:27,y:7, id:'ex7', em:'🌀', on:false}
+  ],
+  win: 'sheep7',
+  winTitle: "SAVED BY THE BEE!",
+  winStory: "The bee flew in. You stopped the car. KABOOM -- but you were safe. You thanked the bee. Shinshong Sheep survived. Now you need furniture for the underwater home..."
+});
+
+LEVELS.push({
+  id: 8,
+  name: "THE FLYING PIG -- BACON RAIN!",
+  bpm: 138, mel: [523,659,784,1047,988,784,659,523],
+  bass: [131,0,196,0,220,0,165,0],
+  bgTop: '#04050e', bgBot: '#020308',
+  pStart: {x:2, y:10}, ammo: 5,
+  intro: [
+    {spk:"HBC", ico:"🍑", txt:"My underwater car home needs furniture but I have NO MONEY. I need to think of a way to become rich..."},
+    {spk:"HBC", ico:"🍑", txt:"I invented ROCKET BOOSTER SHOES for pigs! Revolutionary transport! Nobody bought them. I was MAD."},
+    {spk:"NARRATOR", ico:"📖", txt:"HBC flipped the rocket shoes UPSIDE DOWN, launched the pig into the sky, and fired it DOWNWARD. KABLOOSH! It hit the Earth. It rained BACON! The pig crashed into a couch store and all the furniture flew into HBC's home!"}
+  ],
+  map: [
+    "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "O............................O",
+    "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+  ],
+  ents: [
+    {t:'npc', x:12,y:3, id:'rpig', em:'🐷',
+     msg:"ROCKET PIG: Nobody bought me as transport. Time for Plan B -- launch me DOWNWARD!",
+     act:function(e,done){
+       showDlg("ROCKET PIG","🐷","Nobody bought my rocket booster shoes as transport. Inventor is mad. But flipping them upside down is a NEW idea...",[
+         {l:"FIRE THE PIG DOWNWARD!",a:function(){
+           sfxRocket(); e.alive=false;
+           spawnParts(e.px,e.py,'#ff4400',24);
+           setTimeout(function(){sfxBoom();notify("KABLOOSH! THE PIG HIT THE EARTH! IT IS RAINING BACON EVERYWHERE!");},700);
+           done();
+         }}
+       ]);
+     }},
+    {t:'item', x:5, y:4, id:'b1', em:'🥓', msg:"RAINING BACON! Best day ever.",act:function(e){e.alive=false;sfxC();player.bc=(player.bc||0)+1;notify("Bacon collected! ("+player.bc+"/5)");}},
+    {t:'item', x:9, y:6, id:'b2', em:'🥓', msg:"More sky bacon!",act:function(e){e.alive=false;sfxC();player.bc=(player.bc||0)+1;notify("Bacon collected! ("+player.bc+"/5)");}},
+    {t:'item', x:15,y:3, id:'b3', em:'🥓', msg:"Sizzling bacon from the sky!",act:function(e){e.alive=false;sfxC();player.bc=(player.bc||0)+1;notify("Bacon collected! ("+player.bc+"/5)");}},
+    {t:'item', x:20,y:7, id:'b4', em:'🥓', msg:"Bacon rain!",act:function(e){e.alive=false;sfxC();player.bc=(player.bc||0)+1;notify("Bacon collected! ("+player.bc+"/5)");}},
+    {t:'item', x:24,y:5, id:'b5', em:'🥓', msg:"Last piece of sky bacon!",act:function(e){e.alive=false;sfxC();player.bc=(player.bc||0)+1;notify("Bacon collected! ("+player.bc+"/5)");}},
+    {t:'npc', x:22,y:10, id:'couch', em:'🛋️',
+     msg:"COUCH STORE OWNER: A PIG CRASHED THROUGH MY ROOF! Just take everything! Take ALL the furniture!",
+     act:function(e,done){
+       showDlg("COUCH STORE","🛋️","A flying pig just destroyed my roof! I give up. Take ALL of the furniture for FREE!",[
+         {l:"Take the furniture!",a:function(){
+           sfxC(); e.alive=false;
+           notify("ALL FURNITURE COLLECTED! Your underwater home is now a palace!");
+           player.collected['furn']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:24,y:10, id:'furn', em:'🏡', msg:"Free furniture! Your underwater home is fully furnished!"},
+    {t:'exit', x:26,y:10, id:'ex8', em:'🌀', on:false},
+    {t:'sign', x:4, y:2, id:'sg8', em:'📜',
+     msg:"1) Launch the ROCKET PIG downward. 2) Collect all 5 BACON pieces. 3) Visit the COUCH STORE for free furniture!"},
+    {t:'sign', x:8, y:10, id:'sg8b', em:'🦆',
+     msg:"A DUCK nearby: I am allergic to bacon but that bacon looks delicious... I probably should not eat it... (Spoiler: the duck eats it next level)"}
+  ],
+  win: 'furn',
+  winTitle: "FREE FURNITURE! KABLOOSH!",
+  winStory: "KABLOOSH! Bacon rain! Best day ever! The couch store gave away everything free. Meanwhile a duck ate some bacon and lost its brain..."
+});
+
+LEVELS.push({
+  id: 9,
+  name: "THE BRAINLESS DUCK & ANTMUCKY FAT SOUP",
+  bpm: 125, mel: [294,349,440,587,523,440,349,294],
+  bass: [147,0,220,0,196,0,165,0],
+  bgTop: '#1a2030', bgBot: '#0e1420',
+  pStart: {x:2, y:7}, ammo: 6,
+  intro: [
+    {spk:"DUCK", ico:"🦆", txt:"A bacon strip landed in my bowl. I ate it. Something happened to my brain... I LOST IT. I do not know who I am."},
+    {spk:"DUCK", ico:"🦆", txt:"I think I am a SUPERHERO! That man is being mean to a kid! I will punch him!"},
+    {spk:"NARRATOR", ico:"📖", txt:"The duck punched the man. The man punched the duck into a tree. The duck bounced off the tree and hit the man. The man is now called ANTMUCKY FAT SOUP. He went to Doc Antysimphaleana for smart juice -- BRAIN EXPLOSION -- the Earth split in half!"}
+  ],
+  map: [
+    "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+    "C............................C",
+    "C...b.b......................C",
+    "C...b.b......................C",
+    "C............................C",
+    "C............................C",
+    "C............................C",
+    "C............................C",
+    "C...b.b..b.b.................C",
+    "C...b.b..b.b.................C",
+    "C............................C",
+    "C............................C",
+    "C............................C",
+    "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+  ],
+  ents: [
+    {t:'npc', x:4, y:7, id:'duck9', em:'🦆',
+     msg:"ANTMUCKY FAT SOUP (formerly duck): I ate bacon and lost my brain. I am a superhero now. I need to become smart again."},
+    {t:'enemy', x:11,y:7, hp:3,mhp:3, id:'mm1', em:'😡', patrol:true, spd:1.2},
+    {t:'sign', x:10,y:5, id:'kid', em:'👦',
+     msg:"KID: That mean man is horrible to me! Can you stop him please?? Beat him up!"},
+    {t:'sign', x:16,y:7, id:'tree', em:'🌳',
+     msg:"A STURDY TREE. The duck hit this, bounced off, and flew back at the mean man. Classic physics."},
+    {t:'npc', x:21,y:7, id:'drsmart', em:'🥼',
+     msg:"DOC ANTYSIMPHALEANA: Smart Juice! This fixes brains. Warning: may cause excessive brain growth and cranial explosion.",
+     act:function(e,done){
+       if(!player.killed['mm1']){showDlg("DOC ANTYSIMPHALEANA","🥼","Deal with that mean man first!",[]);return;}
+       showDlg("DOC ANTYSIMPHALEANA","🥼","Smart Juice application commencing! This fixes all brain issues. Probably. Disclaimer: side effects may include the Earth splitting.",[
+         {l:"Apply Smart Juice!",a:function(){
+           sfxBoom(); spawnParts(e.px,e.py,'#a78bfa',30);
+           notify("BRAIN TOO BIG! BRAIN POPPED! Brain Monster emerges! Knows everything except karate! Earth splits in half!");
+           player.collected['split']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:24,y:7, id:'split', em:'🌍', msg:"The Earth split in half! An alien appears with a deal: win a dogsled race for the tape to fix the Earth!"},
+    {t:'exit', x:26,y:7, id:'ex9', em:'🌀', on:false}
+  ],
+  win: 'split',
+  winTitle: "EARTH SPLIT IN HALF!",
+  winStory: "Too much smart juice. Brain exploded. Brain Monster punched mean man around the world repeatedly. A kid stopped them. Impact split the Earth. An alien has tape to fix it..."
+});
+
+LEVELS.push({
+  id: 10,
+  name: "THE DOG RACE & THE TAPE BOMB",
+  bpm: 210, mel: [523,587,659,784,659,587,523,0],
+  bass: [131,196,262,0,196,131,196,0],
+  bgTop: '#a0c8e8', bgBot: '#c0dff8',
+  pStart: {x:1, y:7}, ammo: 3,
+  intro: [
+    {spk:"ALIEN", ico:"👽", txt:"Earth split in half! I have ENORMOUS TAPE to fix it. But you must WIN a dogsled race against me first!"},
+    {spk:"NARRATOR", ico:"📖", txt:"Lickaleajanickaradoesta raced the alien. The race was neck and neck. Alien took a 5 mile lead... 6... 7. But the dog went so FAST it started to fly!"},
+    {spk:"NARRATOR", ico:"📖", txt:"The dog died but slid to the finish line. The alien's dog pushed the sled over -- and Lickaleajanickaradoesta WON! But the tape was a BOMB..."}
+  ],
+  map: [
+    "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII",
+    "I............................I",
+    "I..i....i....................I",
+    "I....i.......................I",
+    "I..i....i..i.................I",
+    "I............................I",
+    "I............................I",
+    "I............................I",
+    "I..i....i....................I",
+    "I............................I",
+    "I..i.....i...................I",
+    "I............................I",
+    "I............................I",
+    "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+  ],
+  ents: [
+    {t:'enemy', x:3, y:9, hp:6,mhp:6, id:'alien', em:'👽', patrol:true, spd:3.1},
+    {t:'sign', x:5, y:2, id:'sg10', em:'📜',
+     msg:"DOG RACE vs the ALIEN! Race to the right. Beat him there. Poop attacks slow the alien down! Watch out for ice patches."},
+    {t:'sign', x:5, y:6, id:'sg10b', em:'🐕',
+     msg:"YOUR SLED DOG: Woof! I am going so fast I might start flying! (I will die but my momentum will carry us to victory!)"},
+    {t:'npc', x:22,y:7, id:'tbomb', em:'📼',
+     msg:"THE TAPE from the alien. Is that a countdown? Is this a BOMB? It is definitely a bomb.",
+     act:function(e,done){
+       showDlg("THE TAPE","📼","The alien hands over the enormous tape. You apply it to the Earth to fix the split. Wait. Is that ticking? 10... 9... 8...",[
+         {l:"APPLY THE TAPE!",a:function(){
+           sfxBoom(); e.alive=false;
+           spawnParts(e.px,e.py,'#ff4400',40);
+           notify("THE TAPE WAS A BOMB! Half the Earth is GONE! Half of HBC is gone too! A loose brain flies into Antmucky Fat Soup!");
+           player.collected['halfb']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:26,y:7, id:'halfb', em:'🍑', msg:"Half a butt. 30 brains instead of 60. Antmucky Fat Soup got a brain -- now smart but thinks he IS a Hairless Butt Cheek!"},
+    {t:'exit', x:27,y:7, id:'ex10', em:'🌀', on:false}
+  ],
+  win: 'halfb',
+  winTitle: "RACE WON! EARTH BOMBED!",
+  winStory: "The tape was a bomb. Half the Earth destroyed. Antmucky Fat Soup got a brain and started pooping on everyone. He pooped on a bride and groom at a wedding. He went to JAIL."
+});
+
+LEVELS.push({
+  id: 11,
+  name: "IN THE JAIL CELL -- PRESIDENT OF BUTT CHEEK WORLD",
+  bpm: 143, mel: [523,659,784,1047,784,1047,1047,0],
+  bass: [131,0,131,196,262,0,196,0],
+  bgTop: '#2a1808', bgBot: '#180e04',
+  pStart: {x:2, y:7}, ammo: 10,
+  intro: [
+    {spk:"ANTMUCKY FAT SOUP", ico:"🧠", txt:"I am in JAIL. I pooped on a bride and groom at a wedding because I thought I was a Hairless Butt Cheek. I must ESCAPE."},
+    {spk:"ANTMUCKY FAT SOUP", ico:"🧠", txt:"I found a FIRE EXTINGUISHER! If I sit on it and squeeze the handle it will rocket me right out of this jail!"},
+    {spk:"NARRATOR", ico:"📖", txt:"He blasted out of jail, flew to California where a forest was on fire, put it out, carved a Butt Cheek statue from stone, the people were amazed -- and he became PRESIDENT OF BUTT CHEEK WORLD! He immediately made really bad choices."}
+  ],
+  map: [
+    "JJJJJJJJJJJJJJJJJJJJJJJJJJJJ",
+    "JBBBBBBBBBBBBBBBBBBBBBBBBBBBBJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JB..........................BJ",
+    "JBBBBBBBBBBBBBBBBBBBBBBBBBBBBJ",
+    "JJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
+  ],
+  ents: [
+    {t:'npc', x:5, y:7, id:'fext', em:'🧯',
+     msg:"FIRE EXTINGUISHER: Sit on me. Squeeze the handle. Blast out of jail. Simple!",
+     act:function(e,done){
+       showDlg("FIRE EXTINGUISHER","🧯","Sit on it. Grip tight. Squeeze the handle in 3... 2... 1...",[
+         {l:"BLAST OFF!",a:function(){
+           sfxRocket(); e.alive=false;
+           spawnParts(e.px,e.py,'#ffffff',20);
+           notify("BLASTING THROUGH THE JAIL WALL! YOU ARE FREE! Flying to California!");
+           player.hasExt=true; done();
+         }}
+       ]);
+     }},
+    {t:'sign', x:3, y:4, id:'wed', em:'💒',
+     msg:"THE WEDDING you ruined by pooping on the bride and groom. They called 911. That is why you are here."},
+    {t:'enemy', x:15,y:7, hp:5,mhp:5, id:'fire1', em:'🔥', patrol:false, spd:0},
+    {t:'enemy', x:17,y:6, hp:4,mhp:4, id:'fire2', em:'🔥', patrol:false, spd:0},
+    {t:'npc', x:21,y:7, id:'stone', em:'🪨',
+     msg:"A LARGE STONE. You could carve this into a magnificent Hairless Butt Cheek statue.",
+     act:function(e,done){
+       if(!player.killed['fire1']){showDlg("STONE","🪨","Put out the fire first with poop attacks!",[]);return;}
+       showDlg("THE STONE","🪨","You carve a MAGNIFICENT statue of a Hairless Butt Cheek. The people of California gather and stare in awe.",[
+         {l:"Unveil the statue!",a:function(){
+           sfxC(); sfxLvlDone(); e.alive=false;
+           notify("BUTT CHEEK STATUE UNVEILED! The people are amazed! YOU ARE NOW PRESIDENT OF BUTT CHEEK WORLD!");
+           player.collected['crown']=true; done();
+         }}
+       ]);
+     }},
+    {t:'pick', x:24,y:7, id:'crown', em:'👑', msg:"THE CROWN OF BUTT CHEEK WORLD. You are President now. You immediately start making really bad choices. THE END!"},
+    {t:'exit', x:26,y:7, id:'ex11', em:'🎊', on:false},
+    {t:'sign', x:3, y:9, id:'sg11', em:'📜',
+     msg:"ESCAPE PLAN: 1) Grab FIRE EXTINGUISHER and blast out. 2) Poop on the FIRE to put it out. 3) Carve the STONE into a statue. 4) Become PRESIDENT!"}
+  ],
+  win: 'crown',
+  winTitle: "PRESIDENT OF BUTT CHEEK WORLD!",
+  winStory: "Antmucky Fat Soup became President of Butt Cheek World and immediately started making really bad choices. THE END!"
+});
+
+})();
+
+// ── ENGINE ──
+function mkPlayer(lx, ly) {
+  return {
+    x: lx*TILE, y: ly*TILE,
+    w: TILE*0.7, h: TILE*0.85,
+    hp: 100, mhp: 100,
+    poopAmmo: 5,
+    inv: 0, dir: 'r',
+    wf: 0, wt: 0,
+    collected: {}, killed: {},
+    hasGlue:false, hasSheep:false, hasExt:false, bc:0
+  };
+}
+
+var mapData = [];
+function parseMap(rows) { mapData = rows.map(function(r){return r.split('');}); }
+function tileAt(c,r) {
+  if(r<0||r>=mapData.length||c<0||c>=(mapData[0]?mapData[0].length:0))return'W';
+  return mapData[r][c];
+}
+function isSolid(c,r) {
+  var t = tileAt(c,r);
+  return 'TSGPWHOBICEJ'.indexOf(t) >= 0;
+}
+
+// Game loop
+var last = 0;
+function loop(ts) {
+  var dt = Math.min((ts - last) / 1000, 0.05);
+  last = ts;
+  if (!dlgOpen && !lvlDone) {
+    movePlayer(dt);
+    updateEnts(dt);
+    updateProjs(dt);
+    updateParts(dt);
+    moveCam();
+    checkPickups();
+    if(pCD>0)pCD-=dt;
+    if(fCD>0)fCD-=dt;
+    if(player.inv>0)player.inv-=dt;
+  }
+  if(player) render();
+  raf = requestAnimationFrame(loop);
+}
+
+function movePlayer(dt) {
+  var dx=0, dy=0;
+  if(keys['ArrowLeft']||keys['KeyA']){dx=-1;player.dir='l';}
+  if(keys['ArrowRight']||keys['KeyD']){dx=1;player.dir='r';}
+  if(keys['ArrowUp']||keys['KeyW'])dy=-1;
+  if(keys['ArrowDown']||keys['KeyS'])dy=1;
+  if(dx&&dy){dx*=0.707;dy*=0.707;}
+  var spd = TILE*4*dt;
+  var cols = mapData[0]?mapData[0].length:30;
+  var rows = mapData.length;
+
+  var nx = player.x + dx*spd;
+  var cc = dx>0 ? Math.floor((nx+player.w)/TILE) : Math.floor(nx/TILE);
+  if(!isSolid(cc,Math.floor(player.y/TILE))&&!isSolid(cc,Math.floor((player.y+player.h-1)/TILE)))
+    player.x = Math.max(0, Math.min(nx, (cols-1)*TILE - player.w));
+
+  var ny = player.y + dy*spd;
+  var rr = dy>0 ? Math.floor((ny+player.h)/TILE) : Math.floor(ny/TILE);
+  if(!isSolid(Math.floor(player.x/TILE),rr)&&!isSolid(Math.floor((player.x+player.w-1)/TILE),rr))
+    player.y = Math.max(0, Math.min(ny, (rows-1)*TILE - player.h));
+
+  if(dx||dy){
+    player.wt+=dt;
+    if(player.wt>0.14){player.wf=(player.wf+1)%4;player.wt=0;}
+    stepT-=dt; if(stepT<=0){sfxStep();stepT=0.22;}
+  }
+}
+
+function spawnEnts(lvl) {
+  ents = lvl.ents.map(function(e) {
+    return {
+      t:e.t, x:e.x, y:e.y, id:e.id, em:e.em||'?',
+      msg:e.msg||'', act:e.act||null,
+      hp:e.hp||0, mhp:e.mhp||1,
+      patrol:e.patrol||false, spd:(e.spd||1),
+      alive:true, on:e.on||false,
+      px:e.x*TILE, py:e.y*TILE,
+      pd:1, pt:0, af:0, at:0
+    };
+  });
+}
+
+function updateEnts(dt) {
+  for(var i=0;i<ents.length;i++) {
+    var e = ents[i];
+    if(!e.alive) continue;
+    e.at+=dt; if(e.at>0.3){e.af=(e.af+1)%4;e.at=0;}
+
+    if(e.patrol && e.t==='enemy') {
+      e.px += e.pd * e.spd * TILE * dt;
+      e.pt += dt;
+      var nc = Math.floor(e.px/TILE) + (e.pd>0?1:-1);
+      if(isSolid(nc, Math.floor(e.py/TILE)) || e.pt>2.5) { e.pd*=-1; e.pt=0; }
+
+      if(player.inv<=0) {
+        var d = Math.hypot(e.px-player.x, e.py-player.y);
+        if(d < TILE*0.9) {
+          player.hp = Math.max(0, player.hp-10);
+          player.inv = 1.2;
+          spawnParts(player.x,player.y,'#ff4444',8);
+          sfxHurt(); notify('OUCH! -10 HP');
+          updHud();
+          if(player.hp<=0) respawn();
+        }
+      }
+    }
+  }
+}
+
+function updateProjs(dt) {
+  for(var i=projs.length-1;i>=0;i--) {
+    var p = projs[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt;
+    if(p.life<=0||isSolid(Math.floor(p.x/TILE),Math.floor(p.y/TILE))) {
+      spawnParts(p.x,p.y,'#8B4513',5); projs.splice(i,1); continue;
+    }
+    for(var j=0;j<ents.length;j++) {
+      var e=ents[j];
+      if(!e.alive||e.t!=='enemy')continue;
+      if(Math.hypot(e.px-p.x,e.py-p.y)<TILE*0.85) {
+        e.hp-=p.dmg; spawnParts(e.px,e.py,'#ff8800',6); sfxHit();
+        if(e.hp<=0){e.alive=false;player.killed[e.id]=true;spawnParts(e.px,e.py,'#ffd700',12);sfxDie();notify('ENEMY DOWN!');}
+        projs.splice(i,1); break;
+      }
+    }
+  }
+}
+
+function updateParts(dt) {
+  for(var i=parts.length-1;i>=0;i--) {
+    var p=parts[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=220*dt;
+    p.life-=dt; p.a=p.life/p.ml;
+    if(p.life<=0)parts.splice(i,1);
+  }
+}
+
+function spawnParts(x,y,col,n) {
+  for(var i=0;i<n;i++) {
+    var a=Math.random()*Math.PI*2, s=60+Math.random()*160;
+    parts.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-90,color:col,r:2+Math.random()*4,life:0.5+Math.random()*0.5,ml:1,a:1});
+  }
+}
+
+function moveCam() {
+  var cols=mapData[0]?mapData[0].length:30, rows=mapData.length;
+  var tx=player.x-W/2+player.w/2, ty=player.y-H/2+player.h/2;
+  cam.x += (Math.max(0,Math.min(tx,cols*TILE-W))-cam.x)*0.12;
+  cam.y += (Math.max(0,Math.min(ty,rows*TILE-H))-cam.y)*0.12;
+}
+
+function checkPickups() {
+  for(var i=0;i<ents.length;i++) {
+    var e=ents[i]; if(!e.alive)continue;
+    var d=Math.hypot(e.px-player.x,e.py-player.y);
+    if(e.t==='pick'&&d<TILE*1.2&&!player.collected[e.id]) {
+      player.collected[e.id]=true;
+      sfxC(); spawnParts(e.px,e.py,'#ffd700',18);
+      notify('GOT IT! '+e.msg);
+      for(var j=0;j<ents.length;j++){if(ents[j].t==='exit')ents[j].on=true;}
+      sfxPortal();
+    }
+    if(e.t==='exit'&&e.on&&d<TILE*1.2) showLvlComplete();
+  }
+}
+
+function doInteract() {
+  if(dlgOpen){closeDlg();return;}
+  if(lvlDone)return;
+  var best=null, bestD=TILE*2.2;
+  for(var i=0;i<ents.length;i++){
+    var e=ents[i]; if(!e.alive)continue;
+    var d=Math.hypot(e.px-player.x,e.py-player.y);
+    if(d<bestD&&(e.t==='sign'||e.t==='item'||e.t==='npc')){bestD=d;best=e;}
+  }
+  if(!best)return;
+  sfxI();
+  if(best.act) {
+    best.act(best, function(){
+      for(var j=0;j<ents.length;j++){if(ents[j].t==='exit')ents[j].on=true;}
+    });
+  } else {
+    showDlg(best.em+' '+best.id.toUpperCase(), best.em||'?', best.msg, []);
+  }
+}
+
+function doPoopAtk() {
+  if(pCD>0||dlgOpen)return;
+  pCD=0.45;
+  var vx=player.dir==='r'?TILE*9:-TILE*9;
+  projs.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:vx,vy:0,dmg:2,life:2.2});
+  sfxP(); updHud();
+}
+
+function doFartAtk() {
+  if(fCD>0||dlgOpen)return;
+  fCD=1.2;
+  for(var i=0;i<ents.length;i++){
+    var e=ents[i];
+    if(!e.alive||e.t!=='enemy')continue;
+    if(Math.hypot(e.px-player.x,e.py-player.y)<TILE*3.2){
+      e.hp-=1; spawnParts(e.px,e.py,'#90ee90',5);
+      if(e.hp<=0){e.alive=false;player.killed[e.id]=true;sfxDie();spawnParts(e.px,e.py,'#ffd700',10);notify('FART KILL!');}
+    }
+  }
+  spawnParts(player.x,player.y,'#90ee90',20); sfxF(); updHud();
+  notify('FART CLOUD!');
+}
+
+function respawn() {
+  var lvl=LEVELS[curLvl];
+  player.hp=player.mhp; player.inv=2;
+  player.x=lvl.pStart.x*TILE; player.y=lvl.pStart.y*TILE;
+  notify('Knocked out... but butt cheeks never give up!');
+  updHud();
+}
+
+// ── RENDER ──
+function render() {
+  ctx.clearRect(0,0,W,H);
+  if(!player||!mapData||!mapData.length||!cam) return;
+  ctx.save();
+  ctx.translate(-Math.round(cam.x),-Math.round(cam.y));
+  drawMap(); drawEnts(); drawProjs(); drawParts(); drawPlayer();
+  ctx.restore();
+}
+
+function drawMap() {
+  var lvl=LEVELS[curLvl];
+  var cols=mapData[0]?mapData[0].length:30, rows=mapData.length;
+  TILE = Math.min(Math.floor(W/cols), Math.floor(H/rows));
+  var g=ctx.createLinearGradient(0,0,0,rows*TILE);
+  g.addColorStop(0,lvl.bgTop); g.addColorStop(1,lvl.bgBot);
+  ctx.fillStyle=g; ctx.fillRect(0,0,cols*TILE,rows*TILE);
+
+  for(var r=0;r<rows;r++) {
+    for(var c=0;c<cols;c++) {
+      var t=tileAt(c,r), tx=c*TILE, ty=r*TILE;
+      if(t==='.'||t===' ')continue;
+      ctx.textAlign='center';
+      if(t==='T'){ ctx.fillStyle='#0d2e0a';ctx.fillRect(tx,ty,TILE,TILE);ctx.font=Math.floor(TILE*.88)+'px serif';ctx.fillText('\u{1F332}',tx+TILE/2,ty+TILE*.88);}
+      else if(t==='t'){ ctx.font=Math.floor(TILE*.82)+'px serif';ctx.fillText('\u{1F332}',tx+TILE/2,ty+TILE*.85+Math.sin(Date.now()/800+c)*2);}
+      else if(t==='S'){ ctx.fillStyle='#061e30';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='~'){ var w=Math.sin(Date.now()/500+c*.7+r*.4);ctx.fillStyle='hsl(210,65%,'+(30+w*8)+'%)';ctx.fillRect(tx,ty,TILE,TILE);ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(tx+2,ty+TILE*.4,TILE-4,2);}
+      else if(t==='G'){ ctx.fillStyle='#4a3200';ctx.fillRect(tx,ty,TILE,TILE);ctx.font=Math.floor(TILE*.75)+'px serif';ctx.fillText('\u{1F33E}',tx+TILE/2,ty+TILE*.85);}
+      else if(t==='g'){ ctx.font=Math.floor(TILE*.7)+'px serif';ctx.fillText('\u{1F33F}',tx+TILE/2,ty+TILE*.85);}
+      else if(t==='P'){ ctx.fillStyle='#0d0520';ctx.fillRect(tx,ty,TILE,TILE);ctx.font=Math.floor(TILE*.65)+'px serif';ctx.fillText('\u{1F52E}',tx+TILE/2,ty+TILE*.85);}
+      else if(t==='p'){ ctx.font=Math.floor(TILE*.62)+'px serif';ctx.fillText('\u{1F4A0}',tx+TILE/2,ty+TILE*.85);}
+      else if(t==='W'){ ctx.fillStyle='#111';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='H'){ ctx.fillStyle='#1a1408';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='O'){ ctx.fillStyle='#030318';ctx.fillRect(tx,ty,TILE,TILE);if((c*7+r*13)%100<30){ctx.fillStyle='rgba(255,255,200,.7)';ctx.beginPath();ctx.arc(tx+((c*37)%TILE),ty+((r*23)%TILE),1,0,6.28);ctx.fill();}}
+      else if(t==='I'){ ctx.fillStyle='#3a8ec8';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='i'){ ctx.fillStyle='rgba(200,235,255,.55)';ctx.fillRect(tx+2,ty+2,TILE-4,TILE-4);}
+      else if(t==='C'){ ctx.fillStyle='#111';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='B'){ ctx.fillStyle='#666';ctx.fillRect(tx+Math.floor(TILE*.35),ty,Math.floor(TILE*.3),TILE);ctx.fillStyle='#444';ctx.fillRect(tx,ty,TILE,3);ctx.fillRect(tx,ty+TILE-3,TILE,3);}
+      else if(t==='b'){ ctx.fillStyle='#2a2a2a';ctx.fillRect(tx,ty,TILE,TILE);}
+      else if(t==='J'){ ctx.fillStyle='#0a0a0a';ctx.fillRect(tx,ty,TILE,TILE);}
+    }
+  }
+}
+
+function drawEnts() {
+  ctx.textAlign='center';
+  for(var i=0;i<ents.length;i++){
+    var e=ents[i]; if(!e.alive)continue;
+    var bob=Math.sin(Date.now()/420+e.x)*(e.patrol?4:3);
+    var fs=Math.floor(TILE*.9);
+
+    if(e.t==='pick'){
+      ctx.save(); ctx.shadowBlur=18; ctx.shadowColor='#ffd700';
+      ctx.font=(Math.floor(TILE*(1+Math.sin(Date.now()/400)*.07)))+'px serif';
+      ctx.fillText(e.em, e.px+TILE/2, e.py+TILE*.88+bob);
+      ctx.restore();
+    } else if(e.t==='exit'){
+      if(e.on){
+        ctx.save(); ctx.shadowBlur=22; ctx.shadowColor='#7B2FBE';
+        ctx.translate(e.px+TILE/2, e.py+TILE/2);
+        ctx.rotate(Date.now()/220);
+        ctx.font=Math.floor(TILE*.92)+'px serif'; ctx.textAlign='center';
+        ctx.fillText('\u{1F300}', 0, TILE*.32);
+        ctx.restore();
+      } else {
+        ctx.globalAlpha=0.25; ctx.font=fs+'px serif';
+        ctx.fillText(e.em||'\u{1F300}', e.px+TILE/2, e.py+TILE*.88);
+        ctx.globalAlpha=1;
+      }
+    } else {
+      if(e.t==='enemy'&&e.id.indexOf('fire')===0){
+        ctx.font=Math.floor(TILE*(0.8+Math.random()*.35))+'px serif';
+      } else {
+        ctx.font=fs+'px serif';
+      }
+      ctx.fillText(e.em, e.px+TILE/2, e.py+TILE*.88+bob);
+    }
+
+    // HP bar for enemies
+    if(e.t==='enemy'&&e.mhp>1){
+      var bw=TILE*.8, bx=e.px+TILE*.1, by=e.py-7;
+      ctx.fillStyle='#222'; ctx.fillRect(bx,by,bw,5);
+      ctx.fillStyle=e.hp/e.mhp>0.5?'#44dd44':'#dd4444';
+      ctx.fillRect(bx,by,bw*(e.hp/e.mhp),5);
+    }
+
+    // [E] prompt
+    var pd=Math.hypot(e.px-player.x,e.py-player.y);
+    if(pd<TILE*2&&(e.t==='sign'||e.t==='item'||e.t==='npc')){
+      ctx.fillStyle='#ffd700';
+      ctx.font=Math.floor(TILE*.3)+'px "Press Start 2P",monospace';
+      ctx.fillText('[E]', e.px+TILE/2, e.py-12);
+    }
+  }
+}
+
+function drawProjs() {
+  ctx.textAlign='center';
+  for(var i=0;i<projs.length;i++){
+    var p=projs[i];
+    ctx.save(); ctx.globalAlpha=Math.min(1,p.life);
+    ctx.font=Math.floor(TILE*.55)+'px serif';
+    ctx.fillText('\u{1F4A9}', p.x, p.y);
+    ctx.restore();
+  }
+}
+
+function drawParts() {
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i];
+    ctx.save(); ctx.globalAlpha=p.a; ctx.fillStyle=p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.28); ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawPlayer() {
+  var px=player.x+player.w/2, py=player.y+player.h;
+  var moving=keys['ArrowLeft']||keys['KeyA']||keys['ArrowRight']||keys['KeyD']||keys['ArrowUp']||keys['KeyW']||keys['ArrowDown']||keys['KeyS'];
+  var bob=(player.wf%2===0&&moving)?3:0;
+  ctx.save();
+  ctx.translate(px, py+bob);
+  if(player.dir==='l') ctx.scale(-1,1);
+  if(player.inv>0&&Math.floor(player.inv*10)%2===0) ctx.globalAlpha=0.4;
+  ctx.font=Math.floor(TILE*1.05)+'px serif';
+  ctx.textAlign='center';
+  ctx.fillText('\u{1F351}', 0, -2);
+  ctx.font=Math.floor(TILE*.46)+'px serif';
+  ctx.fillText('\u{1FA72}', 0, Math.floor(TILE*.08));
+  ctx.restore();
+  // Shadow
+  ctx.save(); ctx.globalAlpha=0.18; ctx.fillStyle='#000';
+  ctx.beginPath(); ctx.ellipse(px,player.y+player.h+3,TILE*.3,TILE*.09,0,0,6.28); ctx.fill();
+  ctx.restore();
+}
+
+// ── UI ──
+function updHud() {
+  var lvl=LEVELS[curLvl];
+  document.getElementById('hnum').textContent='LEVEL '+lvl.id;
+  document.getElementById('hname').textContent=lvl.name;
+  document.getElementById('hpf').style.width=(player.hp/player.mhp*100)+'%';
+  document.getElementById('hpv').textContent=player.hp;
+  document.getElementById('ppf').style.width=(player.poopAmmo/10*100)+'%';
+  document.getElementById('ppv').textContent=player.poopAmmo;
+}
+
+function notify(msg) {
+  var el=document.getElementById('notif');
+  el.textContent=msg; el.classList.add('on');
+  if(nTimer)clearTimeout(nTimer);
+  nTimer=setTimeout(function(){el.classList.remove('on');},2800);
+}
+
+var iQ=[];
+function showIntro(lines) { iQ=lines.slice(); nextIntro(); }
+function nextIntro() {
+  if(!iQ.length){
+    closeDlg();
+    if(actx && actx.state==='suspended') actx.resume();
+    startMusic();
+    return;
+  }
+  var l=iQ.shift();
+  showDlg(l.spk, l.ico, l.txt, [{l:iQ.length?'NEXT':'PLAY!',a:nextIntro}]);
+}
+
+function showDlg(spk, ico, body, btns) {
+  dlgOpen=true;
+  document.getElementById('dlg').style.display='block';
+  document.getElementById('ds').innerHTML=spk;
+  document.getElementById('dp').innerHTML=ico||'';
+  document.getElementById('db').textContent=body;
+  var da=document.getElementById('da'); da.innerHTML='';
+  if(!btns||!btns.length){
+    var b=document.createElement('button'); b.className='dbs'; b.textContent='Close';
+    b.onclick=closeDlg; da.appendChild(b);
+  } else {
+    for(var i=0;i<btns.length;i++){
+      (function(btn){
+        var b=document.createElement('button'); b.className='dbn'; b.textContent=btn.l;
+        b.onclick=function(){closeDlg();btn.a();}; da.appendChild(b);
+      })(btns[i]);
+    }
+  }
+}
+function closeDlg(){ dlgOpen=false; document.getElementById('dlg').style.display='none'; }
+
+function showLvlComplete() {
+  if(lvlDone)return; lvlDone=true;
+  stopMusic(); sfxLvlDone();
+  var lvl=LEVELS[curLvl];
+  document.getElementById('lct').textContent=lvl.winTitle;
+  document.getElementById('lcs').textContent=lvl.winStory;
+  var btn=document.getElementById('lcb');
+  if(curLvl>=LEVELS.length-1){
+    btn.textContent='THE END! Play Again?';
+    btn.onclick=function(){curLvl=0;document.getElementById('lc').style.display='none';loadLvl();};
+  } else {
+    btn.textContent='NEXT LEVEL'; btn.onclick=nextLvl;
+  }
+  document.getElementById('lc').style.display='flex';
+}
+
+function nextLvl(){
+  curLvl=Math.min(curLvl+1,LEVELS.length-1);
+  document.getElementById('lc').style.display='none';
+  loadLvl();
+}
+
+function loadLvl() {
+  var lvl=LEVELS[curLvl];
+  lvlDone=false; projs=[]; parts=[];
+  parseMap(lvl.map);
+  var cols=lvl.map[0].length, rows=lvl.map.length;
+  TILE=Math.min(Math.floor(W/cols),Math.floor(H/rows));
+  player=mkPlayer(lvl.pStart.x, lvl.pStart.y);
+  player.poopAmmo=lvl.ammo;
+  cam={x:0,y:0};
+  spawnEnts(lvl);
+  updHud();
+  showIntro(lvl.intro);
+}
+
+function startGame() {
+  document.getElementById('title').style.display='none';
+  started=true; initAudio(); loadLvl();
+  last=performance.now();
+  raf=requestAnimationFrame(loop);
+}
+
+// ── AUDIO ──
+var actx=null, mGn=null, sGn=null, mNd=[], mInt=null, mSt=0;
+function initAudio(){
+  if(actx)return;
+  actx=new(window.AudioContext||window.webkitAudioContext)();
+  mGn=actx.createGain(); mGn.gain.value=0.18; mGn.connect(actx.destination);
+  sGn=actx.createGain(); sGn.gain.value=0.65; sGn.connect(actx.destination);
+}
+function setM(v){if(mGn)mGn.gain.value=v/100;}
+function setS(v){if(sGn)sGn.gain.value=v/100;}
+function togM(){var s=document.getElementById('msl'),v=+s.value===0?18:0;s.value=v;setM(v);document.getElementById('mi').innerHTML=v===0?'🔇':'🎵';}
+function togS(){var s=document.getElementById('ssl'),v=+s.value===0?65:0;s.value=v;setS(v);document.getElementById('si').innerHTML=v===0?'🔇':'🔊';}
+
+function tn(f,tp,d,g,t,dst){
+  if(!actx)return;
+  var o=actx.createOscillator(),gn=actx.createGain();
+  o.type=tp||'square'; o.frequency.value=f;
+  gn.gain.setValueAtTime(g||0.3,t); gn.gain.exponentialRampToValueAtTime(0.001,t+d);
+  o.connect(gn); gn.connect(dst||sGn); o.start(t); o.stop(t+d+0.01);
+}
+function ns(d,ff,g,t){
+  if(!actx)return;
+  var b=actx.createBuffer(1,Math.floor(actx.sampleRate*d),actx.sampleRate);
+  var dt=b.getChannelData(0); for(var i=0;i<dt.length;i++)dt[i]=Math.random()*2-1;
+  var s=actx.createBufferSource(); s.buffer=b;
+  var f=actx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=ff||300; f.Q.value=0.5;
+  var gn=actx.createGain(); gn.gain.setValueAtTime(g||0.3,t); gn.gain.exponentialRampToValueAtTime(0.001,t+d);
+  s.connect(f); f.connect(gn); gn.connect(sGn); s.start(t);
+}
+
+function sfxP(){if(!actx)return;var t=actx.currentTime;tn(180,'sawtooth',0.18,0.4,t);tn(100,'sine',0.22,0.3,t+0.06);ns(0.14,250,0.35,t);}
+function sfxF(){
+  if(!actx)return; var t=actx.currentTime;
+  var o=actx.createOscillator(),lf=actx.createOscillator(),lg=actx.createGain(),gn=actx.createGain();
+  o.type='sawtooth'; o.frequency.setValueAtTime(88,t); o.frequency.linearRampToValueAtTime(50,t+0.4);
+  lf.type='sine'; lf.frequency.value=30; lg.gain.value=32; lf.connect(lg); lg.connect(o.frequency);
+  gn.gain.setValueAtTime(0.5,t); gn.gain.exponentialRampToValueAtTime(0.001,t+0.45);
+  o.connect(gn); gn.connect(sGn); o.start(t); o.stop(t+0.47); lf.start(t); lf.stop(t+0.47);
+  ns(0.4,200,0.12,t);
+}
+function sfxC(){if(!actx)return;var t=actx.currentTime;[523,659,784,1047].forEach(function(f,i){tn(f,'square',0.1,0.25,t+i*0.07,sGn);});}
+function sfxI(){if(!actx)return;var t=actx.currentTime;tn(440,'square',0.06,0.2,t);tn(660,'square',0.08,0.22,t+0.07);}
+function sfxHurt(){if(!actx)return;var t=actx.currentTime;tn(220,'sawtooth',0.15,0.4,t);ns(0.2,300,0.3,t);}
+function sfxHit(){if(!actx)return;var t=actx.currentTime;tn(300,'sawtooth',0.08,0.3,t);ns(0.1,400,0.2,t);}
+function sfxDie(){if(!actx)return;var t=actx.currentTime;[400,300,200,120].forEach(function(f,i){tn(f,'sawtooth',0.1,0.3,t+i*0.06);});ns(0.3,500,0.3,t);}
+function sfxBoom(){if(!actx)return;var t=actx.currentTime;ns(0.7,200,0.7,t);ns(0.5,80,0.5,t+0.06);tn(55,'sine',0.55,0.5,t);}
+function sfxPortal(){if(!actx)return;var t=actx.currentTime;for(var i=0;i<10;i++)tn(200+i*90,'sine',0.14,0.12,t+i*0.05);}
+function sfxLvlDone(){if(!actx)return;var t=actx.currentTime;[523,659,784,1047,784,1047,1047].forEach(function(f,i){tn(f,'square',0.18,0.3,t+[0,0.15,0.3,0.45,0.65,0.8,0.95][i]);});}
+function sfxRocket(){if(!actx)return;var t=actx.currentTime;ns(0.9,600,0.5,t);ns(0.7,200,0.4,t+0.1);}
+function sfxSplash(){if(!actx)return;var t=actx.currentTime;ns(0.25,1200,0.35,t);tn(200,'sine',0.2,0.2,t);}
+function sfxStep(){if(!actx)return;ns(0.04,900,0.05,actx.currentTime);}
+
+function startMusic(){
+  stopMusic();
+  var lvl=LEVELS[curLvl]; if(!lvl||!actx)return;
+  var sd=60/lvl.bpm/2; mSt=0;
+  function step(){
+    if(!actx)return;
+    var t=actx.currentTime;
+    var ml=lvl.mel, bl=lvl.bass;
+    var mf=ml[mSt%ml.length], bf=bl[mSt%bl.length];
+    if(mf){var o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=mf;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+0.01);g.gain.setValueAtTime(1,t+sd*0.55);g.gain.linearRampToValueAtTime(0,t+sd*0.9);o.connect(g);g.connect(mGn);o.start(t);o.stop(t+sd);mNd.push(o);}
+    if(mSt%2===0&&bf){var o2=actx.createOscillator(),g2=actx.createGain();o2.type='triangle';o2.frequency.value=bf;g2.gain.setValueAtTime(0.5,t);g2.gain.exponentialRampToValueAtTime(0.001,t+sd*1.9);o2.connect(g2);g2.connect(mGn);o2.start(t);o2.stop(t+sd*2);mNd.push(o2);}
+    if(mSt%8===0||mSt%8===4){ns(0.08,80,0.15,t);tn(52,'sine',0.12,0.2,t,mGn);}
+    if(mSt%8===2||mSt%8===6){ns(0.07,3000,0.1,t);}
+    ns(0.02,8000,0.03,t);
+    mSt++; if(mNd.length>50)mNd.splice(0,25);
+  }
+  step(); mInt=setInterval(step,sd*1000);
+}
+function stopMusic(){if(mInt){clearInterval(mInt);mInt=null;}for(var i=0;i<mNd.length;i++){try{mNd[i].stop();}catch(ex){}}mNd=[];}
+
+
+// ── TOUCH CONTROLS ──
+(function() {
+  // D-pad touch handling — supports both touch and mouse
+  var dirMap = {
+    'dp-up':    'ArrowUp',
+    'dp-down':  'ArrowDown',
+    'dp-left':  'ArrowLeft',
+    'dp-right': 'ArrowRight'
+  };
+
+  function pressDir(id, down) {
+    var code = dirMap[id];
+    if (!code) return;
+    keys[code] = down;
+  }
+
+  Object.keys(dirMap).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      pressDir(id, true);
+      el.classList.add('pressed');
+    }, {passive: false});
+
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      pressDir(id, false);
+      el.classList.remove('pressed');
+    }, {passive: false});
+
+    el.addEventListener('touchcancel', function(e) {
+      pressDir(id, false);
+      el.classList.remove('pressed');
+    }, {passive: false});
+
+    // Mouse fallback for desktop testing
+    el.addEventListener('mousedown', function(e) { pressDir(id, true); el.classList.add('pressed'); });
+    el.addEventListener('mouseup',   function(e) { pressDir(id, false); el.classList.remove('pressed'); });
+    el.addEventListener('mouseleave',function(e) { pressDir(id, false); el.classList.remove('pressed'); });
+  });
+
+  // Joystick-style swipe on d-pad area
+  var dpad = document.getElementById('dpad');
+  var touchStartX = 0, touchStartY = 0;
+  var swipeDirs = [];
+
+  dpad.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, {passive: true});
+
+  // Action buttons
+  function bindAction(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      fn();
+      el.style.transform = 'scale(0.88)';
+    }, {passive: false});
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      el.style.transform = '';
+    }, {passive: false});
+    el.addEventListener('mousedown', function() { fn(); });
+  }
+
+  bindAction('btn-interact', function() { doInteract(); });
+  bindAction('btn-poop',     function() { doPoopAtk(); });
+  bindAction('btn-fart',     function() { doFartAtk(); });
+
+  // Hide touch UI on desktop (has a real keyboard)
+  function checkInputMode() {
+    // Show touch UI always on touch devices
+    var hasTouchScreen = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (!hasTouchScreen) {
+      var tu = document.getElementById('touch-ui');
+      if (tu) tu.style.display = 'none';
+    }
+  }
+  checkInputMode();
+})();
+</script>
+</body>
+</html>
